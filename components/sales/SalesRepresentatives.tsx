@@ -1,4 +1,4 @@
-import { SalesRepCard } from "./sales/SalesRepCard";
+import { SalesRepCard } from "./SalesRepCard";
 
 const representatives = [
   {

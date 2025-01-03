@@ -1,4 +1,4 @@
-import { OfferCard } from "./offers/OfferCard";
+import { OfferCard } from "./OfferCard";
 
 const offers = [
   {

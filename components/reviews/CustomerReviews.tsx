@@ -1,5 +1,4 @@
-import { Star } from "lucide-react";
-import { ReviewCard } from "./reviews/ReviewCard";
+import { ReviewCard } from "./ReviewCard";
 
 const reviews = [
   {
