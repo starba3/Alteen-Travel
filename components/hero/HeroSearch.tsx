@@ -1,5 +1,3 @@
-"use client";
-
 import { SearchBar } from "../search/SearchBar";
 
 export function HeroSearch() {

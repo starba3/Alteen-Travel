@@ -1,5 +1,3 @@
-"use client";
-
 import { HeroSearch } from "./HeroSearch";
 
 export function HeroContent() {
