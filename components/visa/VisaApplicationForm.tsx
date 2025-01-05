@@ -32,8 +32,8 @@ export function VisaApplicationForm({ selectedCountry, preview }: VisaApplicatio
         nationality: '',
         dateOfBirth: '',
         passportNumber: '',
-        personalPhoto: undefined,
-        passportPhoto: undefined
+        personalPhoto: undefined as File | undefined,
+        passportPhoto: undefined as File | undefined
         
       }]
     }

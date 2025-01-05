@@ -8,11 +8,12 @@ import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 
 interface DatePickerProps {
-  value: string;
-  onChange: (value: string) => void;
+  value?: string;
+  onChange?: (date: string) => void;
+  className?: string;
 }
 
-export function DatePicker({ value, onChange }: DatePickerProps) {
+export function DatePicker({ className, value, onChange, ...props }: DatePickerProps) {
   const maxDate = new Date();
   maxDate.setFullYear(maxDate.getFullYear() - 18);
 
@@ -34,7 +35,7 @@ export function DatePicker({ value, onChange }: DatePickerProps) {
         <Calendar
           mode="single"
           selected={value ? new Date(value) : undefined}
-          onSelect={(date) => onChange(date?.toISOString() ?? "")}
+          onSelect={(date) => onChange?.(date?.toISOString() ?? "")}
           disabled={(date) => date > maxDate}
           initialFocus
         />

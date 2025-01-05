@@ -39,14 +39,14 @@ export const travelerSchema = z.object({
       .refine(
         (file) => ACCEPTED_IMAGE_TYPES.includes(file.type),
         "Only .jpg, .jpeg, and .png files are accepted"
-      ),
+      ).optional(),
     
     passportPhoto: z.instanceof(File)
       .refine((file) => file.size <= MAX_FILE_SIZE, "File size must be less than 5MB")
       .refine(
         (file) => ACCEPTED_IMAGE_TYPES.includes(file.type),
         "Only .jpg, .jpeg, and .png files are accepted"
-      ),
+      ).optional(),
   }))
   .min(1, "At least one traveler is required"),
 });

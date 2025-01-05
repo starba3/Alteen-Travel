@@ -41,7 +41,7 @@ const getNavItems = (isAdmin: boolean) => {
   if (isAdmin) {
     baseItems.push({
       title: "Dashboard",
-      link: "/admin/dashboard"
+      link: "/admin"
     });
   }
 
