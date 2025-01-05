@@ -1,70 +1,102 @@
 "use client";
 
 import { useState } from "react";
+import { useForm, useFieldArray } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Plus, Minus, X } from "lucide-react";
+import { TravelerFields } from "./TravelerFields";
+import { PaymentModal } from "../payment/PaymentModal";
+import { 
+  travelerSchema, 
+  type TravelerFormData,
+  defaultTraveler 
+} from "@/lib/validations/traveler";
+import type { Country } from "@/lib/countries";
 
-export const VisaApplicationForm = () => {
-  const [travelers, setTravelers] = useState(1);
+interface VisaApplicationFormProps {
+  selectedCountry: Country;
+  preview?: boolean;
+}
 
-  const removeTraveler = (indexToRemove: number) => {
-    if (travelers > 1) {
-      setTravelers(travelers - 1);
+export function VisaApplicationForm({ selectedCountry, preview }: VisaApplicationFormProps) {
+  const [showPayment, setShowPayment] = useState(false);
+  
+  const form = useForm<TravelerFormData>({
+    resolver: zodResolver(travelerSchema),
+    defaultValues: {
+      travelers: [{
+        givenName: '',
+        fatherName: '',
+        surname: '',
+        nationality: '',
+        dateOfBirth: '',
+        passportNumber: '',
+        personalPhoto: undefined,
+        passportPhoto: undefined
+        
+      }]
     }
+  });
+
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "travelers"
+  });
+
+  const totalPrice = selectedCountry.price * fields.length;
+
+  const onSubmit = (data: TravelerFormData) => {
+    setShowPayment(true);
   };
 
   return (
-    <div className="bg-white p-8 rounded-lg shadow-lg">
-      <h3 className="text-2xl font-semibold mb-6">Apply for Visa</h3>
+    <div className="bg-white p-4 sm:p-8 rounded-lg shadow-lg">
+      <h2 className="text-xl sm:text-2xl font-semibold mb-6">
+        Visa Application for {selectedCountry.name}
+      </h2>
       
-      <div className="mb-6">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Number of Travelers
-        </label>
-        <div className="flex items-center space-x-4">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => setTravelers(Math.max(1, travelers - 1))}
-          >
-            <Minus className="h-4 w-4" />
-          </Button>
-          <span className="text-xl font-semibold">{travelers}</span>
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => setTravelers(travelers + 1)}
-          >
-            <Plus className="h-4 w-4" />
-          </Button>
-        </div>
-      </div>
-
-      <div className="space-y-4">
-        {Array.from({ length: travelers }).map((_, index) => (
-          <div key={index} className="relative space-y-4 bg-gray-50 p-6 rounded-lg">
-            <div className="flex justify-between items-center mb-2">
-              <h4 className="font-medium">Traveler {index + 1}</h4>
-              {travelers > 1 && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8 text-gray-500 hover:text-red-500"
-                  onClick={() => removeTraveler(index)}
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              )}
-            </div>
-            <Input placeholder="Full Name" />
-            <Input type="date" placeholder="Date of Birth" />
-            <Input placeholder="Passport Number" />
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
+            {fields.map((field, index) => (
+              <TravelerFields
+                key={field.id}
+                index={index}
+                showRemove={fields.length > 1}
+                onRemove={() => remove(index)}
+                form={form}
+              />
+            ))}
           </div>
-        ))}
-      </div>
 
-      <Button className="w-full mt-6">Apply for Visa</Button>
+          <div className="mt-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => append(defaultTraveler)}
+              className="w-full sm:w-auto"
+            >
+              Add Traveler
+            </Button>
+            <div className="text-left sm:text-right w-full sm:w-auto">
+              <p className="text-sm text-gray-600">Total Price</p>
+              <p className="text-xl sm:text-2xl font-bold">${totalPrice} USD</p>
+            </div>
+          </div>
+
+          <Button type="submit" className="w-full mt-6">
+            {preview ? "Start Full Application" : "Continue to Payment"}
+          </Button>
+        </form>
+      </Form>
+
+      <PaymentModal 
+        isOpen={showPayment}
+        onClose={() => setShowPayment(false)}
+        country={selectedCountry}
+        travelers={fields.length}
+      />
     </div>
   );
-};
+}

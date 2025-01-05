@@ -2,51 +2,51 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { 
+  Sheet, 
+  SheetContent, 
+  SheetTrigger,
+  SheetHeader,
+  SheetTitle 
+} from "@/components/ui/sheet";
+import { Menu } from "lucide-react";
+import { Navigation } from "./Navigation";
+import { UserProfile } from "./UserProfile";
 
 interface MobileMenuProps {
-  navItems: string[];
+  isLoggedIn: boolean;
+  onSignIn: () => void;
+  onSignOut: () => void;
 }
 
-export const MobileMenu = ({ navItems }: MobileMenuProps) => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+export function MobileMenu({ isLoggedIn, onSignIn, onSignOut }: MobileMenuProps) {
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <>
-      <button
-        className="md:hidden"
-        onClick={() => setIsMenuOpen(!isMenuOpen)}
-      >
-        <svg
-          className="h-6 w-6"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d={isMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"}
-          />
-        </svg>
-      </button>
-
-      {isMenuOpen && (
-        <div className="md:hidden py-4">
-          {navItems.map((item) => (
-            <a
-              key={item}
-              href="#"
-              className="block py-2 text-gray-700 hover:text-primary transition-colors"
-            >
-              {item}
-            </a>
-          ))}
-          <Button size="lg" className="w-full mt-4">
-            Book Now
-          </Button>
+    <Sheet open={isOpen} onOpenChange={setIsOpen}>
+      <SheetTrigger asChild>
+        <Button variant="ghost" size="icon" className="md:hidden">
+          <Menu className="h-6 w-6" />
+          <span className="sr-only">Open menu</span>
+        </Button>
+      </SheetTrigger>
+      <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+        <SheetHeader>
+          <SheetTitle>Menu</SheetTitle>
+        </SheetHeader>
+        <div className="flex flex-col h-full">
+          <nav className="flex flex-col space-y-4 py-4">
+            {isLoggedIn ? (
+              <UserProfile variant="mobile" onSignOut={onSignOut} />
+            ) : (
+              <Button onClick={onSignIn} className="w-full">
+                Sign In
+              </Button>
+            )}
+            <Navigation variant="mobile" />
+          </nav>
         </div>
-      )}
-    </>
+      </SheetContent>
+    </Sheet>
   );
-};
+}

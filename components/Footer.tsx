@@ -1,26 +1,21 @@
-import { Button } from "@/components/ui/button";
-import { NewsletterForm } from "./footer/NewsletterForm";
-import { SocialLinks } from "./footer/SocialLinks";
-import { ContactInfo } from "./footer/ContactInfo";
 import { QuickLinks } from "./footer/QuickLinks";
+import { ContactInfo } from "./footer/ContactInfo";
+import { SocialLinks } from "./footer/SocialLinks";
+import { Newsletter } from "./footer/Newsletter";
+import { Copyright } from "./footer/Copyright";
 
-const Footer = () => {
+export default function Footer() {
   return (
-    <footer className="bg-gray-900 text-white pt-20 pb-10">
+    <footer className="bg-gray-900 text-white pt-20 pb-10" id="contact">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
           <QuickLinks />
           <ContactInfo />
           <SocialLinks />
-          <NewsletterForm />
+          <Newsletter />
         </div>
-
-        <div className="border-t border-gray-800 pt-8 text-center text-gray-400">
-          <p>&copy; 2024 TravelPro. All rights reserved.</p>
-        </div>
+        <Copyright />
       </div>
     </footer>
   );
-};
-
-export default Footer;
+}

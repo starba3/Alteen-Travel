@@ -1,6 +1,6 @@
 import { Facebook, Instagram, Twitter } from "lucide-react";
 
-export const SocialLinks = () => {
+export function SocialLinks() {
   return (
     <div>
       <h3 className="text-xl font-semibold mb-4">Follow Us</h3>
@@ -17,4 +17,4 @@ export const SocialLinks = () => {
       </div>
     </div>
   );
-};
+}

@@ -1,5 +1,3 @@
-"use client";
-
 import { Button } from "@/components/ui/button";
 
 interface DestinationCardProps {
@@ -8,7 +6,7 @@ interface DestinationCardProps {
   description: string;
 }
 
-export const DestinationCard = ({ name, image, description }: DestinationCardProps) => {
+export function DestinationCard({ name, image, description }: DestinationCardProps) {
   return (
     <div className="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
       <div className="relative h-48">
@@ -25,4 +23,4 @@ export const DestinationCard = ({ name, image, description }: DestinationCardPro
       </div>
     </div>
   );
-};
+}

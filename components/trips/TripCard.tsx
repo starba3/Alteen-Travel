@@ -1,5 +1,3 @@
-"use client";
-
 import { Button } from "@/components/ui/button";
 
 interface TripCardProps {
@@ -10,7 +8,7 @@ interface TripCardProps {
   highlights: string[];
 }
 
-export const TripCard = ({ name, image, price, duration, highlights }: TripCardProps) => {
+export function TripCard({ name, image, price, duration, highlights }: TripCardProps) {
   return (
     <div className="bg-white rounded-lg overflow-hidden shadow-lg">
       <div className="relative h-48">
@@ -35,4 +33,4 @@ export const TripCard = ({ name, image, price, duration, highlights }: TripCardP
       </div>
     </div>
   );
-};
+}

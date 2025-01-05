@@ -8,7 +8,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-export const TripFilters = () => {
+export function TripFilters() {
   return (
     <div className="flex gap-4">
       <Select>
@@ -33,4 +33,4 @@ export const TripFilters = () => {
       </Select>
     </div>
   );
-};
+}
