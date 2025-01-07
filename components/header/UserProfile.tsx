@@ -8,7 +8,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import { useAuth } from "@/components/auth/AuthProvider";
 
 interface UserProfileProps {
@@ -17,8 +16,10 @@ interface UserProfileProps {
 }
 
 export function UserProfile({ variant = "desktop", onSignOut }: UserProfileProps) {
-  const { user } = useAuth();
+  const { userData, isAuthenticated, logout } = useAuth();
   
+  if (!isAuthenticated) return null;
+
   const menuItems = [
     { label: "Profile", href: "#" },
     { label: "My Bookings", href: "#" },
@@ -36,7 +37,7 @@ export function UserProfile({ variant = "desktop", onSignOut }: UserProfileProps
         </a>
       ))}
       <button
-        onClick={onSignOut}
+        onClick={logout}
         className="w-full px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors text-left"
       >
         Sign Out
@@ -48,12 +49,16 @@ export function UserProfile({ variant = "desktop", onSignOut }: UserProfileProps
     return (
       <div className="px-4 py-3 border-b">
         <div className="flex items-center space-x-3">
-          <div className="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center">
-            <User className="h-6 w-6 text-gray-600" />
+          <div className="h-10 w-10 rounded-full overflow-hidden">
+            <img 
+              src={userData?.image || '/default-avatar.png'} 
+              alt={userData?.name || 'User avatar'}
+              className="h-full w-full object-cover"
+            />
           </div>
           <div className="flex-1">
-            <p className="font-medium">{user?.name}</p>
-            <p className="text-sm text-gray-500">{user?.email}</p>
+            <p className="font-medium">{userData?.name}</p>
+            <p className="text-sm text-gray-500">{userData?.email}</p>
           </div>
         </div>
         {content}
@@ -69,9 +74,13 @@ export function UserProfile({ variant = "desktop", onSignOut }: UserProfileProps
           className="flex items-center space-x-2 hover:bg-gray-100"
         >
           <div className="flex items-center">
-            <span className="mr-2 text-sm font-medium">{user?.name}</span>
-            <div className="h-8 w-8 rounded-full bg-gray-100 flex items-center justify-center">
-              <User className="h-5 w-5 text-gray-600" />
+            <span className="mr-2 text-sm font-medium">{userData?.name}</span>
+            <div className="h-8 w-8 rounded-full overflow-hidden">
+              <img 
+                src={userData?.image || '/default-avatar.png'} 
+                alt={userData?.name || 'User avatar'}
+                className="h-full w-full object-cover"
+              />
             </div>
             <ChevronDown className="ml-1 h-4 w-4 text-gray-500" />
           </div>

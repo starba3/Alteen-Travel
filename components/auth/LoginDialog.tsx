@@ -19,7 +19,7 @@ export function LoginDialog({ isOpen, onClose, onSuccess }: LoginDialogProps) {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Welcome Back</DialogTitle>
+          <DialogTitle>Sign in</DialogTitle>
         </DialogHeader>
         <LoginForm onSuccess={onSuccess} />
       </DialogContent>

@@ -29,24 +29,25 @@ export async function authenticateUser(email: string, password: string): Promise
   return userData;
 }
 
-export function getStoredAuth(): { user: User | null; token: string | null } {
-  if (typeof window === "undefined") {
-    return { user: null, token: null };
-  }
-
+export function getStoredAuth() {
+  if (typeof window === 'undefined') return { user: null, token: null, isAdmin: false };
+  
   try {
-    const token = localStorage.getItem(AUTH_TOKEN_KEY);
-    const userJson = localStorage.getItem(USER_DATA_KEY);
+    const userStr = localStorage.getItem('authUser');
+    const token = localStorage.getItem('authToken');
+    const user = userStr ? JSON.parse(userStr) : null;
     
-    if (!token || !userJson) {
-      return { user: null, token: null };
-    }
-
-    const user = JSON.parse(userJson) as User;
-    return { user, token };
+    // Also store admin status in localStorage
+    const isAdmin = localStorage.getItem('isAdmin') === 'true';
+    
+    return {
+      user,
+      token,
+      isAdmin
+    };
   } catch (error) {
-    console.error("Error reading auth data:", error);
-    return { user: null, token: null };
+    console.error('Error reading auth data:', error);
+    return { user: null, token: null, isAdmin: false };
   }
 }
 
@@ -54,8 +55,10 @@ export function clearStoredAuth(): void {
   if (typeof window === "undefined") return;
   
   try {
-    localStorage.removeItem(AUTH_TOKEN_KEY);
-    localStorage.removeItem(USER_DATA_KEY);
+    localStorage.removeItem('authUser');
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('isAdmin');
+    localStorage.removeItem('userData');
   } catch (error) {
     console.error("Error clearing auth data:", error);
   }

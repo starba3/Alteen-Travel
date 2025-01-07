@@ -20,6 +20,8 @@ import { loginSchema } from "@/lib/validations/auth";
 import { authenticateUser } from "@/lib/auth";
 import { useAuth } from "./AuthProvider";
 import type { LoginFormData } from "@/lib/types/auth";
+import { auth } from '@/lib/firebase/config';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
 interface LoginFormProps {
   onSuccess: () => void;
@@ -43,8 +45,14 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
   async function onSubmit(data: LoginFormData) {
     setIsLoading(true);
     try {
-      const user = await authenticateUser(data.email, data.password);
-      login(user);
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        data.email,
+        data.password
+      );
+      
+      login(userCredential.user);
+      
       toast({
         title: "Welcome back!",
         description: "You have successfully signed in.",

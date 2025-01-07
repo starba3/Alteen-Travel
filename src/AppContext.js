@@ -1,7 +1,7 @@
 import { FirebaseProvider } from './contexts/FirebaseContext';
 import Login from './components/Login';
 
-function App() {
+function AppContext() {
   return (
     <FirebaseProvider>
       <Login />
@@ -9,4 +9,4 @@ function App() {
   );
 }
 
-export default App; 
+export default AppContext; 

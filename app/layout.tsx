@@ -4,6 +4,8 @@ import { Inter } from 'next/font/google';
 import { Toaster } from "@/components/ui/toaster";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { AuthProvider } from "@/components/auth/AuthProvider";
+import { FirebaseProvider } from '@/app/context/firebase-provider';
+
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -22,8 +24,10 @@ export default function RootLayout({
       <body className={inter.className}>
         <ErrorBoundary>
           <AuthProvider>
-            {children}
-            <Toaster />
+            <FirebaseProvider>
+              {children}
+              <Toaster />
+            </FirebaseProvider>
           </AuthProvider>
         </ErrorBoundary>
       </body>

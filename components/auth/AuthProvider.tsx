@@ -2,62 +2,123 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { getStoredAuth, clearStoredAuth } from "@/lib/auth";
-import type { User } from "@/lib/types/user";
+import { User as FirebaseUser, getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
 import { useToast } from "@/hooks/use-toast";
+import { getFirestore, doc, getDoc } from 'firebase/firestore';
+
+interface FirestoreUserData {
+  name: string;
+  image: string;
+  email: string;
+  isAdmin: boolean;
+}
 
 interface AuthContextType {
-  user: User | null;
+  user: FirebaseUser | null;
   isAuthenticated: boolean;
-  login: (user: User) => void;
+  isAdmin: boolean;
+  userData: FirestoreUserData | null;
+  login: (user: FirebaseUser) => void;
   logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<FirebaseUser | null>(null);
+  const [userData, setUserData] = useState<FirestoreUserData | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 
   useEffect(() => {
-    const initializeAuth = () => {
-      try {
-        const { user, token } = getStoredAuth();
+    const auth = getAuth();
+    
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        setUser(user);
+        setIsAuthenticated(true);
         
-        if (user && token) {
-          setUser(user);
-          setIsAuthenticated(true);
+        try {
+          const db = getFirestore();
+          const userDoc = await getDoc(doc(db, 'users', user.uid));
+          const data = userDoc.data() as FirestoreUserData;
+          
+          setIsAdmin(data?.isAdmin === true);
+          setUserData(data);
+          
+          localStorage.setItem('isAdmin', String(data?.isAdmin === true));
+          localStorage.setItem('userData', JSON.stringify(data));
+          
+          // Store auth data
+          const token = await user.getIdToken();
+          localStorage.setItem('authUser', JSON.stringify(user));
+          localStorage.setItem('authToken', token);
+        } catch (error) {
+          console.error('Error fetching user data:', error);
         }
-      } catch (error) {
-        console.error("Error initializing auth:", error);
-        toast({
-          variant: "destructive",
-          title: "Authentication Error",
-          description: "There was a problem with your session. Please sign in again.",
-        });
+      } else {
+        setUser(null);
+        setUserData(null);
+        setIsAuthenticated(false);
+        setIsAdmin(false);
         clearStoredAuth();
-      } finally {
-        setIsLoading(false);
       }
-    };
+      setIsLoading(false);
+    });
 
-    initializeAuth();
+    return () => unsubscribe();
   }, [toast]);
 
-  const login = (user: User) => {
-    setUser(user);
-    setIsAuthenticated(true);
+  const login = async (user: FirebaseUser) => {
+    try {
+      setUser(user);
+      setIsAuthenticated(true);
+      
+      const db = getFirestore();
+      const userDoc = await getDoc(doc(db, 'users', user.uid));
+      const userData = userDoc.data();
+      const isAdminUser = userData?.isAdmin === true;
+      
+      setIsAdmin(isAdminUser);
+      localStorage.setItem('isAdmin', String(isAdminUser));
+      
+      // Store auth data
+      const token = await user.getIdToken();
+      localStorage.setItem('authUser', JSON.stringify(user));
+      localStorage.setItem('authToken', token);
+      
+    } catch (error) {
+      console.error("Error setting up user session:", error);
+      toast({
+        variant: "destructive",
+        title: "Authentication Error",
+        description: "There was a problem logging in. Please try again.",
+      });
+    }
   };
 
-  const logout = () => {
-    clearStoredAuth();
-    setUser(null);
-    setIsAuthenticated(false);
-    toast({
-      title: "Signed out",
-      description: "You have been successfully signed out.",
-    });
+  const logout = async () => {
+    try {
+      const auth = getAuth();
+      await signOut(auth);  // This will trigger onAuthStateChanged
+      clearStoredAuth();
+      setUser(null);
+      setIsAuthenticated(false);
+      setIsAdmin(false);
+      toast({
+        title: "Signed out",
+        description: "You have been successfully signed out.",
+      });
+    } catch (error) {
+      console.error("Error signing out:", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "There was a problem signing out.",
+      });
+    }
   };
 
   if (isLoading) {
@@ -65,7 +126,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      isAuthenticated, 
+      isAdmin, 
+      userData,
+      login, 
+      logout 
+    }}>
       {children}
     </AuthContext.Provider>
   );

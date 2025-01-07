@@ -20,7 +20,7 @@ export default function Home() {
       <FeaturedTrips />
       <ExclusiveOffers />
       <VisaServices />
-      <WhyChooseUs />
+      {/* <WhyChooseUs /> */}
       {/* <CustomerReviews />
       <SalesRepresentatives /> */}
       <Footer />

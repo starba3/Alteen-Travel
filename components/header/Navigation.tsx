@@ -2,15 +2,14 @@
 
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { getStoredAuth } from "@/lib/auth";
-import { useEffect, useState } from "react";
-import type { User } from "@/lib/types/user";
+import { useAuth } from "@/components/auth/AuthProvider";
 
 interface NavigationProps {
   variant?: "mobile" | "desktop";
 }
 
-const getNavItems = (isAdmin: boolean) => {
+const getNavItems = (isAuthenticated: boolean, isAdmin: boolean) => {
+  
   const baseItems = [
     {
       title: "Home",
@@ -38,7 +37,7 @@ const getNavItems = (isAdmin: boolean) => {
     }
   ];
 
-  if (isAdmin) {
+  if (isAuthenticated && isAdmin) {
     baseItems.push({
       title: "Dashboard",
       link: "/admin"
@@ -49,15 +48,8 @@ const getNavItems = (isAdmin: boolean) => {
 };
 
 export function Navigation({ variant = "desktop" }: NavigationProps) {
-  const [user, setUser] = useState<User | null>(null);
-
-  useEffect(() => {
-    const { user } = getStoredAuth();
-    setUser(user);
-  }, []);
-
-  const isAdmin = user?.role === 'admin';
-  const navItems = getNavItems(isAdmin);
+  const { isAuthenticated, isAdmin } = useAuth();
+  const navItems = getNavItems(isAuthenticated, isAdmin);
 
   return (
     <nav className={cn(
