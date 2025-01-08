@@ -12,7 +12,7 @@ export function TripFilters() {
   return (
     <div className="flex gap-4">
       <Select>
-        <SelectTrigger className="w-[180px]">
+        <SelectTrigger className="w-[160px]">
           <SelectValue placeholder="Destination" />
         </SelectTrigger>
         <SelectContent>
@@ -22,7 +22,7 @@ export function TripFilters() {
         </SelectContent>
       </Select>
       <Select>
-        <SelectTrigger className="w-[180px]">
+        <SelectTrigger className="w-[160px]">
           <SelectValue placeholder="Duration" />
         </SelectTrigger>
         <SelectContent>
