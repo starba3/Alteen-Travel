@@ -11,11 +11,12 @@ import type { Country } from "@/lib/countries";
 interface PaymentModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onSuccess: () => void;
   country: Country;
   travelers: number;
 }
 
-export function PaymentModal({ isOpen, onClose, country, travelers }: PaymentModalProps) {
+export function PaymentModal({ isOpen, onClose, onSuccess, country, travelers }: PaymentModalProps) {
   const [status, setStatus] = useState<"form" | "success" | "error">("form");
   const totalAmount = country.price * travelers;
 
@@ -23,6 +24,11 @@ export function PaymentModal({ isOpen, onClose, country, travelers }: PaymentMod
     onClose();
     // Reset status after animation completes
     setTimeout(() => setStatus("form"), 300);
+  };
+
+  const handleSuccess = () => {
+    setStatus("success");
+    onSuccess();
   };
 
   return (
@@ -34,7 +40,7 @@ export function PaymentModal({ isOpen, onClose, country, travelers }: PaymentMod
             <PaymentHeader amount={totalAmount} onClose={handleClose} />
             <PaymentForm 
               amount={totalAmount}
-              onSuccess={() => setStatus("success")}
+              onSuccess={handleSuccess}
               onError={() => setStatus("error")}
             />
           </>

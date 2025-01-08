@@ -1,11 +1,17 @@
-import { Plane } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 export function Logo() {
   return (
     <Link href="/" className="flex items-center">
-      <Plane className="h-8 w-8 text-primary" />
-      <span className="ml-2 text-xl font-bold">TravelPro</span>
+      <Image 
+        src="/logo.png"
+        alt="Alteen Logo"
+        width={48}
+        height={48}
+        className="text-primary"
+      />
+      <span className="ml-3 text-2xl font-bold">Alteen</span>
     </Link>
   );
 }

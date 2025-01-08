@@ -34,7 +34,6 @@ export function VisaApplicationForm({ selectedCountry, preview }: VisaApplicatio
         passportNumber: '',
         personalPhoto: undefined as File | undefined,
         passportPhoto: undefined as File | undefined
-        
       }]
     }
   });
@@ -48,6 +47,11 @@ export function VisaApplicationForm({ selectedCountry, preview }: VisaApplicatio
 
   const onSubmit = (data: TravelerFormData) => {
     setShowPayment(true);
+  };
+
+  const handlePaymentSuccess = () => {
+    setShowPayment(false);
+    form.reset(); // Reset form after successful payment
   };
 
   return (
@@ -86,7 +90,7 @@ export function VisaApplicationForm({ selectedCountry, preview }: VisaApplicatio
           </div>
 
           <Button type="submit" className="w-full mt-6">
-            {preview ? "Start Full Application" : "Continue to Payment"}
+            Continue to Payment
           </Button>
         </form>
       </Form>
@@ -94,6 +98,7 @@ export function VisaApplicationForm({ selectedCountry, preview }: VisaApplicatio
       <PaymentModal 
         isOpen={showPayment}
         onClose={() => setShowPayment(false)}
+        onSuccess={handlePaymentSuccess}
         country={selectedCountry}
         travelers={fields.length}
       />
