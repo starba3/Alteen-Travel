@@ -9,6 +9,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/components/auth/AuthProvider";
+import { useTranslations } from "@/lib/i18n/hooks";
+import { useParams } from "next/navigation";
 
 interface UserProfileProps {
   variant?: "desktop" | "mobile";
@@ -17,6 +19,9 @@ interface UserProfileProps {
 
 export function UserProfile({ variant = "desktop", onSignOut }: UserProfileProps) {
   const { userData, isAuthenticated, logout } = useAuth();
+  const params = useParams();
+  const locale = params.locale as string;
+  const { t } = useTranslations(params.locale as string);
   
   if (!isAuthenticated) return null;
 
@@ -40,7 +45,7 @@ export function UserProfile({ variant = "desktop", onSignOut }: UserProfileProps
         onClick={logout}
         className="w-full px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors text-left"
       >
-        Sign Out
+        {t('header.signOut')}
       </button>
     </div>
   );

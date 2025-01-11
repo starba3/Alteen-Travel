@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/components/auth/AuthProvider";
+import { useParams } from "next/navigation";
+import { useTranslations } from "@/lib/i18n/hooks";
 
 interface NavigationProps {
   variant?: "mobile" | "desktop";
@@ -12,34 +14,34 @@ const getNavItems = (isAuthenticated: boolean, isAdmin: boolean) => {
   
   const baseItems = [
     {
-      title: "Home",
+      title: "home",
       link: "/"
     },
     {
-      title: "Destinations", 
+      title: "destinations", 
       link: "/"
     },
     {
-      title: "Offers",
+      title: "offers",
       link: "/"
     },
     {
-      title: "Trips",
+      title: "trips",
       link: "/"
     },
     {
-      title: "Visa Services",
+      title: "visaServices",
       link: "/visa-services"
     },
     {
-      title: "Contact",
+      title: "contact",
       link: "#contact"
     }
   ];
 
   if (isAuthenticated && isAdmin) {
     baseItems.push({
-      title: "Dashboard",
+      title: "dashboard",
       link: "/admin"
     });
   }
@@ -48,6 +50,10 @@ const getNavItems = (isAuthenticated: boolean, isAdmin: boolean) => {
 };
 
 export function Navigation({ variant = "desktop" }: NavigationProps) {
+  const params = useParams();
+  const locale = params.locale as string;
+  const { t } = useTranslations(params.locale as string);
+  
   const { isAuthenticated, isAdmin } = useAuth();
   const navItems = getNavItems(isAuthenticated, isAdmin);
 
@@ -65,7 +71,7 @@ export function Navigation({ variant = "desktop" }: NavigationProps) {
             variant === "mobile" && "text-lg"
           )}
         >
-          {item.title}
+          {t(`header.${item.title}`)}
         </Link>
       ))}
     </nav>

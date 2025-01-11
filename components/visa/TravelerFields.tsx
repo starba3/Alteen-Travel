@@ -14,6 +14,8 @@ import { TravelerNameFields } from "./form/fields/TravelerNameFields";
 import { TravelerPassportFields } from "./form/fields/TravelerPassportFields";
 import { TravelerDateFields } from "./form/fields/TravelerDateFields";
 import { TravelerDocumentFields } from "./form/fields/TravelerDocumentFields";
+import { useTranslations } from "@/lib/i18n/hooks";
+import { useParams } from 'next/navigation';
 
 interface TravelerFieldsProps {
   index: number;
@@ -29,17 +31,21 @@ export function TravelerFields({
   form,
 }: TravelerFieldsProps) {
   const [isOpen, setIsOpen] = useState(true);
+  const params = useParams();
+  const { t } = useTranslations(params.locale as string);
 
   return (
     <Collapsible
       open={isOpen}
       onOpenChange={setIsOpen}
-      className="space-y-4 bg-gray-50 p-4 sm:p-6 rounded-lg"
+      className={`space-y-4 bg-gray-50 p-2 sm:p-4 rounded-lg ${params.locale === 'ar' ? 'rtl' : 'ltr'}`}
     >
       <div className="flex justify-between items-center">
         <CollapsibleTrigger asChild>
           <Button variant="ghost" size="sm" className="hover:bg-transparent">
-            <h4 className="font-medium mr-2 text-sm sm:text-base">Traveler {index + 1}</h4>
+            <h4 className="font-medium mr-2 text-sm sm:text-base">
+              {t('form.traveler.title')} {index + 1}
+            </h4>
             {isOpen ? (
               <ChevronUp className="h-4 w-4" />
             ) : (
@@ -61,7 +67,7 @@ export function TravelerFields({
       </div>
       <CollapsibleContent className="space-y-6">
         <TravelerNameFields form={form} index={index} />
-        <TravelerDateFields form={form} index={index} />
+        {/* <TravelerDateFields form={form} index={index} /> */}
         <TravelerPassportFields form={form} index={index} />
         <TravelerDocumentFields form={form} index={index} />
       </CollapsibleContent>

@@ -4,7 +4,9 @@ import { Inter } from 'next/font/google';
 import { Toaster } from "@/components/ui/toaster";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { AuthProvider } from "@/components/auth/AuthProvider";
-import { FirebaseProvider } from '@/app/context/firebase-provider';
+import { FirebaseProvider } from './context/firebase-provider';
+import { cookies } from 'next/headers';
+import type { Language } from '@/lib/i18n/translations';
 
 
 const inter = Inter({ subsets: ['latin'] });
@@ -19,14 +21,17 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const cookieStore = cookies();
+  const defaultLanguage = (cookieStore.get('language')?.value as Language) || 'en';
+
   return (
-    <html lang="en">
+    <html lang={defaultLanguage} dir={defaultLanguage === 'ar' ? 'rtl' : 'ltr'}>
       <body className={inter.className}>
         <ErrorBoundary>
           <AuthProvider>
             <FirebaseProvider>
-              {children}
-              <Toaster />
+                {children}
+                <Toaster />
             </FirebaseProvider>
           </AuthProvider>
         </ErrorBoundary>

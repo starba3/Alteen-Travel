@@ -2,6 +2,8 @@
 
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
+import { useParams } from 'next/navigation';
+import { useTranslations } from "@/lib/i18n/hooks";
 
 interface VisaServicesHeaderProps {
   searchQuery: string;
@@ -9,16 +11,21 @@ interface VisaServicesHeaderProps {
 }
 
 export function VisaServicesHeader({ searchQuery, onSearchChange }: VisaServicesHeaderProps) {
+
+  const params = useParams();
+  const locale = params.locale as string;
+  const { t } = useTranslations(params.locale as string);
+
   return (
-    <div className="mb-12">
-      <h1 className="text-4xl font-bold mb-6">Visa Services</h1>
+    <div className="mb-12" dir={locale === "ar" ? "rtl" : "ltr"}>
+      <h1 className="text-4xl font-bold mb-6">{t('visaServices.title')}</h1>
       <p className="text-lg text-gray-600 mb-8">
-        Explore our comprehensive visa services for countries worldwide. We provide hassle-free visa processing with expert guidance throughout your application.
+      {t('visaServices.description')}
       </p>
       
       <div className="relative max-w-xl">
         <Input
-          placeholder="Search countries..."
+          placeholder={t('form.availableCountries')}
           className="pl-12"
           value={searchQuery}
           onChange={onSearchChange}

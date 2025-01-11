@@ -1,9 +1,7 @@
-"use client";
-
 import { Country } from "@/lib/countries";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { CountrySelectButton } from "./CountrySelectButton";
 
 interface CountryCardProps {
   country: Country;
@@ -30,19 +28,11 @@ export function CountryCard({ country, selected, onSelect }: CountryCardProps) {
             Processing time: {country.processingTime}
           </p>
           <p className="text-lg font-medium text-primary">
-            ${country.price} USD
+            {country.price} IQD
           </p>
         </div>
       </div>
-      <Button 
-        variant="outline" 
-        className={cn(
-          "w-full mt-4 transition-all duration-300",
-          selected && "bg-primary text-primary-foreground hover:bg-primary/90"
-        )}
-      >
-        {selected ? 'Selected' : 'Select Country'}
-      </Button>
+      <CountrySelectButton selected={selected || false} onClick={onSelect} />
     </Card>
   );
 }

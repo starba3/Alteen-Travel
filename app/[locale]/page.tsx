@@ -16,10 +16,11 @@ export default function Home() {
     <main className="min-h-screen">
       <Header />
       <Hero />
+      <VisaServices />
       <PopularDestinations />
       <FeaturedTrips />
       <ExclusiveOffers />
-      <VisaServices />
+      
       {/* <WhyChooseUs /> */}
       {/* <CustomerReviews />
       <SalesRepresentatives /> */}

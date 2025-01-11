@@ -16,10 +16,11 @@ interface NationalitySelectProps {
   name?: string;
   disabled?: boolean;
   className?: string;
+  placeholder?: string;
 }
 
 const NationalitySelect = forwardRef<HTMLDivElement, NationalitySelectProps>(
-  ({ value, onChange, onBlur, disabled, className }, ref) => {
+  ({ value, onChange, onBlur, disabled, className, placeholder = "Select nationality" }, ref) => {
     const [isOpen, setIsOpen] = useState(false);
     const [search, setSearch] = useState("");
     const debouncedSearch = useDebounce(search);

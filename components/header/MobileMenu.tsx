@@ -12,6 +12,8 @@ import {
 import { Menu } from "lucide-react";
 import { Navigation } from "./Navigation";
 import { UserProfile } from "./UserProfile";
+import { useParams } from 'next/navigation';
+import { useTranslations } from "@/lib/i18n/hooks";
 
 interface MobileMenuProps {
   isLoggedIn: boolean;
@@ -20,6 +22,10 @@ interface MobileMenuProps {
 }
 
 export function MobileMenu({ isLoggedIn, onSignIn, onSignOut }: MobileMenuProps) {
+  const params = useParams();
+  const locale = params.locale as string;
+  const { t } = useTranslations(params.locale as string);
+
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -27,7 +33,7 @@ export function MobileMenu({ isLoggedIn, onSignIn, onSignOut }: MobileMenuProps)
       <SheetTrigger asChild>
         <Button variant="ghost" size="icon" className="md:hidden">
           <Menu className="h-6 w-6" />
-          <span className="sr-only">Open menu</span>
+          <span className="sr-only">{t('header.menu')}</span>
         </Button>
       </SheetTrigger>
       <SheetContent side="right" className="w-[300px] sm:w-[400px]">
@@ -40,7 +46,7 @@ export function MobileMenu({ isLoggedIn, onSignIn, onSignOut }: MobileMenuProps)
               <UserProfile variant="mobile" onSignOut={onSignOut} />
             ) : (
               <Button onClick={onSignIn} className="w-full">
-                Sign In
+                {t('header.signin')}
               </Button>
             )}
             <Navigation variant="mobile" />
