@@ -15,33 +15,27 @@ import {
 import type { Country } from "@/lib/countries";
 import { useParams } from 'next/navigation';
 import { useTranslations } from "@/lib/i18n/hooks";
+import { CountrySelect } from "@/components/visa/form/inputs/CountrySelect";
 
 interface VisaApplicationFormProps {
   selectedCountry: Country;
   preview?: boolean;
 }
 
-export function VisaApplicationForm({ selectedCountry, preview }: VisaApplicationFormProps) {
+export function VisaApplicationForm({ selectedCountry: initialCountry, preview }: VisaApplicationFormProps) {
   const params = useParams();
   const locale = params.locale as string;
   const { t } = useTranslations(params.locale as string);
   const [showPayment, setShowPayment] = useState(false);
+  // const [selectedCountry, setSelectedCountry] = useState(initialCountry);
   
   const form = useForm<TravelerFormData>({
     resolver: zodResolver(travelerSchema),
     defaultValues: {
       email: '',
       phoneNumber: '',
-      travelers: [{
-        givenName: '',
-        fatherName: '',
-        surname: '',
-        nationality: '',
-        dateOfBirth: '',
-        passportNumber: '',
-        personalPhoto: undefined as File | undefined,
-        passportPhoto: undefined as File | undefined
-      }]
+      country: initialCountry,
+      travelers: [defaultTraveler]
     },
     mode: "onChange"
   });
@@ -51,7 +45,8 @@ export function VisaApplicationForm({ selectedCountry, preview }: VisaApplicatio
     name: "travelers"
   });
 
-  const totalPrice = selectedCountry.price * fields.length;
+  const selectedCountry = form.watch("country");
+  const totalPrice = selectedCountry ? selectedCountry.price * fields.length : 0;
 
   const onSubmit = (data: TravelerFormData) => {
     setShowPayment(true);
@@ -63,13 +58,13 @@ export function VisaApplicationForm({ selectedCountry, preview }: VisaApplicatio
   };
 
   return (
-    <div className={`bg-white p-4 sm:p-8 rounded-lg shadow-lg ${params.locale === 'ar' ? 'rtl' : 'ltr'}`}>
-      <h2 className="text-xl sm:text-2xl font-semibold mb-6" dir={locale === "ar" ? "rtl" : "ltr"}>
-        {t('form.title')} - {selectedCountry.name}
+    <div className={`bg-white p-4 sm:p-8 rounded-lg shadow-lg `} dir={locale === 'ar' ? "rtl" : "ltr"}>
+      <h2 className="text-xl sm:text-2xl font-semibold mb-6">
+        {t('form.title')}
       </h2>
       
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6" dir={locale === "ar" ? "rtl" : "ltr"}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6" dir={locale === 'ar' ? "rtl" : "ltr"}>
           {/* Contact Information Section */}
           <div className="space-y-4">
             <h3 className="text-lg font-medium">{t('form.contact.title')}</h3>
@@ -111,6 +106,23 @@ export function VisaApplicationForm({ selectedCountry, preview }: VisaApplicatio
                 {form.formState.errors.phoneNumber && (
                   <p className="text-sm font-medium text-red-500">
                     {t('form.contact.phoneError')}
+                  </p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium">
+                  {t('form.contact.country')}
+                </label>
+                <CountrySelect
+                  value={selectedCountry}
+                  onChange={(country) => form.setValue("country", country)}
+                  placeholder={t('form.contact.countryPlaceholder')}
+                  className="w-full"
+                />
+                {form.formState.errors.country && (
+                  <p className="text-sm text-red-500">
+                    {form.formState.errors.country.message}
                   </p>
                 )}
               </div>

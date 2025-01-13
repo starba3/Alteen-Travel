@@ -16,12 +16,12 @@ export function VisaServicesLayout({
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
       <div>
-        <h2 className="text-2xl font-semibold mb-6">Available Countries</h2>
+        {/* <h2 className="text-2xl font-semibold mb-6">Available Countries</h2>
         <CountryGrid
           countries={countries}
           selectedCountry={selectedCountry}
           onCountrySelect={onCountrySelect}
-        />
+        /> */}
       </div>
       <div className="lg:sticky lg:top-24">
         <VisaApplicationForm selectedCountry={selectedCountry} />

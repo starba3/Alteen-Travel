@@ -6,6 +6,13 @@ const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png"];
 export const travelerSchema = z.object({
   email: z.string().email("Invalid email address"),
   phoneNumber: z.string().min(8, "Phone number is too short").max(11, "Phone number is too long"),
+  country: z.object({
+    code: z.string(),
+    name: z.string(),
+    flag: z.string(),
+    price: z.number(),
+    processingTime: z.string()
+  }).optional(),
   travelers: z.array(z.object({
     givenName: z.string()
       .min(2, "Given name must be at least 2 characters")
@@ -80,6 +87,12 @@ export type TravelerFormData = z.infer<typeof travelerSchema>;
 export const defaultTraveler = {
   email: "",
   phoneNumber: "",
+  country: {
+    code: "",
+    name: "",
+    flag: "",
+    price: 0
+  },
   givenName: "",
   fatherName: "",
   surname: "",

@@ -7,6 +7,7 @@ import { useOnClickOutside } from "@/hooks/use-click-outside";
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
+// import { Flag } from "@/components/ui/flag";
 import type { Country } from "@/lib/countries";
 
 interface CountrySelectProps {
@@ -45,7 +46,10 @@ export const CountrySelect = forwardRef<HTMLDivElement, CountrySelectProps>(
           onClick={() => setIsOpen(!isOpen)}
         >
           {value ? (
-            <span>{value.name}</span>
+            <div className="flex items-center gap-2">
+              <span className="text-xl">{value.flag}</span>
+              <span>{value.name}</span>
+            </div>
           ) : (
             <span className="text-muted-foreground">{placeholder}</span>
           )}
@@ -71,7 +75,8 @@ export const CountrySelect = forwardRef<HTMLDivElement, CountrySelectProps>(
                   className="w-full justify-start"
                   onClick={() => handleSelect(country)}
                 >
-                  {country.name}
+                <span className="text-xl">{country.flag}</span>
+                  <span>{country.name}</span>
                 </Button>
               ))}
             </div>

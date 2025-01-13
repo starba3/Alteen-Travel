@@ -11,7 +11,7 @@ export function FeaturedCountries() {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-      <div className="space-y-6">
+      {/* <div className="space-y-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {featuredCountries.map((country) => (
             <CountrySelection
@@ -22,7 +22,7 @@ export function FeaturedCountries() {
             />
           ))}
         </div>
-      </div>
+      </div> */}
       <div className="lg:sticky lg:top-24">
         <VisaApplicationForm selectedCountry={selectedCountry} preview />
       </div>

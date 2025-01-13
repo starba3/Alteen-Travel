@@ -11,7 +11,7 @@ export const ALL_COUNTRIES: Country[] = [
     name: "Afghanistan",
     flag: "🇦🇫",
     processingTime: "5-10 business days",
-    price: 1,
+    price: 15,
     code: "AF"
   },
   {

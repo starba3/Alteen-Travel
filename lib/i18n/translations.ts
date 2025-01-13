@@ -66,7 +66,7 @@ export const translations = {
       title: "Visa Application",
       traveler: {
         title: "Traveler",
-        firstName: "First Name",
+        firstName: "First Name",        
         firstNamePlaceholder: "Enter your given name",
         firstNameError: "Given name must be at least 2 characters",
         fatherName: "Father's Name",
@@ -97,6 +97,8 @@ export const translations = {
         phone: "Phone Number",
         phonePlaceholder: "Enter phone number",
         phoneError: "Invalid phone number",
+        country: "Country",
+        countryPlaceholder: "Select country",
       },
       buttons: {
         addTraveler: "Add Traveler",
@@ -221,6 +223,8 @@ export const translations = {
         phone: "رقم الهاتف",
         phonePlaceholder: "أدخل رقم الهاتف",
         phoneError: "رقم الهاتف غير صالح",
+        country: "الدولة",
+        countryPlaceholder: "اختر الدولة",
       },
       buttons: {
         addTraveler: "إضافة مسافر",
