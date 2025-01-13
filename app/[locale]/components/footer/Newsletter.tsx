@@ -4,11 +4,11 @@ import { getTranslations } from "@/lib/i18n/server";
 import { cookies } from "next/headers";
 
 export async function Newsletter() {
-  // const locale = cookies().get("locale")?.value || "en";
-  const { t } = await getTranslations("ar");
+  const locale = cookies().get("locale")?.value || "en";
+  const { t } = await getTranslations(locale);
 
   return (
-    <div dir="rtl">
+    <div dir={locale === "ar" ? "rtl" : "ltr"}>
       <h3 className="text-xl font-semibold mb-4">{t("footer.newsletter")}</h3>
       <p className="mb-4">{t("footer.subscribeForLatestDealsAndUpdates")}</p>
       <div className="space-y-2">

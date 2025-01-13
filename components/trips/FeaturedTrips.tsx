@@ -1,5 +1,7 @@
 import { TripCard } from "./TripCard";
 import { TripFilters } from "./TripFilters";
+import { getTranslations } from "@/lib/i18n/server";
+import { cookies } from "next/headers";
 
 const trips = [
   {
@@ -25,18 +27,21 @@ const trips = [
   },
 ];
 
-const FeaturedTrips = () => {
+export async function FeaturedTrips() {
+  const locale = cookies().get("locale")?.value || "en"; // Default to "en" if no cookie is set
+  const { t } = await getTranslations(locale);
+
   return (
     <section className="py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center mb-12">
-          <h2 className="text-4xl font-bold">Our Featured Trips</h2>
+          <h2 className="text-4xl font-bold">{t("ourFeaturedTrips")}</h2>
           <TripFilters />
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {trips.map((trip) => (
-            <TripCard key={trip.name} {...trip} />
+            <TripCard key={trip.name} {...trip} locale={locale} />
           ))}
         </div>
       </div>

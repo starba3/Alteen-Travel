@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { getTranslations } from "@/lib/i18n/server";
 
 interface TripCardProps {
   name: string;
@@ -6,9 +7,12 @@ interface TripCardProps {
   price: string;
   duration: string;
   highlights: string[];
+  locale: string;
 }
 
-export function TripCard({ name, image, price, duration, highlights }: TripCardProps) {
+export async function TripCard({ name, image, price, duration, highlights, locale }: TripCardProps) {
+  const { t } = await getTranslations(locale);
+
   return (
     <div className="bg-white rounded-lg overflow-hidden shadow-lg">
       <div className="relative h-48">
@@ -29,7 +33,7 @@ export function TripCard({ name, image, price, duration, highlights }: TripCardP
             <li key={highlight} className="text-gray-600">• {highlight}</li>
           ))}
         </ul>
-        <Button className="w-full">Book Now</Button>
+        <Button className="w-full">{t("search.filterActions.bookNow")}</Button>
       </div>
     </div>
   );

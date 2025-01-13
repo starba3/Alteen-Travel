@@ -1,9 +1,11 @@
-import { QuickLinks } from "./footer/QuickLinks";
-import { ContactInfo } from "./footer/ContactInfo";
-import { SocialLinks } from "./footer/SocialLinks";
-import { Newsletter } from "./footer/Newsletter";
-import { Copyright } from "./footer/Copyright";
+import { QuickLinks } from "./QuickLinks";
+import { ContactInfo } from "./ContactInfo";
+import { SocialLinks } from "./SocialLinks";
+import { Newsletter } from "./Newsletter";
+import { Copyright } from "./Copyright";
+import { cookies } from "next/headers";
 export default function Footer() {
+  const locale = cookies().get("locale")?.value || "en";
 
   return (
     <footer className="bg-gray-900 text-white pt-20 pb-10" id="contact">

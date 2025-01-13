@@ -1,6 +1,9 @@
 export const translations = {
   en: {
     seeAllCountries: "See All Countries",
+    exploreTopDestinations: "Explore Our Top Destinations",
+    viewTrips: "View Trips",
+    ourFeaturedTrips: "Our Featured Trips",
     currency: "IQD",
     search: {
       placeholder: "Search destinations",
@@ -13,7 +16,8 @@ export const translations = {
       },
       filterActions: {
         reset: "Reset",
-        apply: "Apply"
+        apply: "Apply",
+        bookNow: "Book Now"
       },
       filterOptions: {
         destinations: {
@@ -99,11 +103,31 @@ export const translations = {
         continue: "Continue to Payment",
         remove: "Remove",
       }
+    },
+    footer: {
+      subscribeForLatestDealsAndUpdates: "Subscribe for latest deals and updates",
+      quickLinks: {
+        title: "Quick Links",
+        home: "Home",
+        offers: "Offers",
+        destinations: "Destinations",
+        visaServices: "Visa Services",
+        aboutUs: "About Us",
+        contact: "Contact",
+      },
+      contactInfo: "Contact Information",
+      followUs: "Follow Us",
+      newsletter: "Newsletter",
+      subscribe: "Subscribe",
+      enterYourEmail: "Enter your email",
     }
   },
   ar: {
     currency: "د.ع",
     home: "الرئيسية",
+    viewTrips: "عرض الرحلات",
+    ourFeaturedTrips: "رحلاتنا المميزة",
+    exploreTopDestinations: "استكشف أفضل الوجهات",
     search: {
       placeholder: "ابحث عن الوجهات",
       searchButton: "ابحث",
@@ -114,6 +138,7 @@ export const translations = {
         budget: "الميزانية"
       },
       filterActions: {
+        bookNow: "احجز الآن",
         reset: "إعادة تعيين",
         apply: "تطبيق"
       },
@@ -203,6 +228,23 @@ export const translations = {
         remove: "إزالة",
         totalPrice: "السعر الكلي",
       }
+    },
+    footer: {
+      subscribeForLatestDealsAndUpdates: "اشترك لآخر العروض والتحديثات",
+      quickLinks: {
+        title: "روابط سريعة",
+        home: "الرئيسية",
+        offers: "العروض",
+        destinations: "الوجهات",
+        visaServices: "خدمات التأشيرات",
+        aboutUs: "عن الشركة",
+        contact: "الاتصال",
+      },
+      contactInfo: "معلومات الاتصال",
+      followUs: "تابعنا",
+      newsletter: "النشرة الإخبارية",
+      subscribe: "الإشتراك",
+      enterYourEmail: "أدخل عنوان بريدك الإلكتروني",
     }
   }
 } as const;

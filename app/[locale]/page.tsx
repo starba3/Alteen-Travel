@@ -9,7 +9,7 @@ import VisaServices from "@/components/VisaServices";
 import WhyChooseUs from "@/components/WhyChooseUs";
 import CustomerReviews from "@/components/CustomerReviews";
 import SalesRepresentatives from "@/components/SalesRepresentatives";
-import Footer from "@/components/Footer";
+import Footer from "./components/footer/Footer";
 
 export default function Home() {
   return (
@@ -19,7 +19,7 @@ export default function Home() {
       <VisaServices />
       <PopularDestinations />
       <FeaturedTrips />
-      <ExclusiveOffers />
+      {/* <ExclusiveOffers /> */}
       
       {/* <WhyChooseUs /> */}
       {/* <CustomerReviews />

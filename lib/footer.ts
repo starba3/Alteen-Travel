@@ -1,10 +1,28 @@
 export const quickLinks = [
-  "Home",
-  "Destinations",
-  "Offers",
-  "Visa Services",
-  "About Us",
-  "Contact",
+  {
+    name: "home",
+    key: "footer.quickLinks.home",
+  },
+  {
+    name: "destinations",
+    key: "footer.quickLinks.destinations",
+  },
+  {
+    name: "offers",
+    key: "footer.quickLinks.offers",
+  },
+  {
+    name: "visaServices",
+    key: "footer.quickLinks.visaServices",
+  },
+  {
+    name: "aboutUs",
+    key: "footer.quickLinks.aboutUs",
+  },
+  {
+    name: "contact",
+    key: "footer.quickLinks.contact",
+  },
 ];
 
 export const contactInfo = {
