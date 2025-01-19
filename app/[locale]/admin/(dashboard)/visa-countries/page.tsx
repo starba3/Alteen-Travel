@@ -1,8 +1,14 @@
 import ClientVisaCountriesTable from './ClientVisaCountriesTable';
 import { type Country } from '@/lib/countries';
+import { headers } from 'next/headers';
 
 async function getVisaCountries() {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/countries`, {
+  // Get the host from headers
+  const headersList = headers();
+  const host = headersList.get('host');
+  const protocol = process.env.NODE_ENV === 'development' ? 'http' : 'https';
+  
+  const response = await fetch(`${protocol}://${host}/api/countries`, {
     cache: 'no-store'
   });
   
