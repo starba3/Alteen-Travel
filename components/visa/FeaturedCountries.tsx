@@ -18,13 +18,11 @@ export function FeaturedCountries() {
   useEffect(() => {
     fetchCountries().then(data => {
       setCountries(data);
-      setSelectedCountry(data[0]);
+      setSelectedCountry(data.filter((country: Country) => country.serviceAvailable)[0]);
     });
   }, []);
 
   if (!selectedCountry) return <div>Loading...</div>;
-
-  const featuredCountries = countries.slice(0, 4);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">

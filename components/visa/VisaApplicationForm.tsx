@@ -7,6 +7,7 @@ import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { TravelerFields } from "./TravelerFields";
 import { PaymentModal } from "../payment/PaymentModal";
+import { getVisaPrice } from "@/lib/auth";
 import { 
   travelerSchema, 
   type TravelerFormData,
@@ -46,7 +47,7 @@ export function VisaApplicationForm({ selectedCountry: initialCountry, preview }
   });
 
   const selectedCountry = form.watch("country");
-  const totalPrice = selectedCountry ? selectedCountry.price * fields.length : 0;
+  const totalPrice = selectedCountry ? selectedCountry.price * fields.length - getVisaPrice() * fields.length : 0;
 
   const onSubmit = (data: TravelerFormData) => {
     setShowPayment(true);
@@ -156,6 +157,12 @@ export function VisaApplicationForm({ selectedCountry: initialCountry, preview }
             >
               {t('form.buttons.addTraveler')}
             </Button>
+
+            <div className="text-left sm:text-right w-full sm:w-auto">
+              <p className="text-sm text-gray-600">{t('form.buttons.totalDiscount')}</p>
+              <p className="text-xl sm:text-2xl font-bold">{getVisaPrice() * fields.length} {t('currency')}</p>
+            </div>
+
             <div className="text-left sm:text-right w-full sm:w-auto">
               <p className="text-sm text-gray-600">{t('form.buttons.totalPrice')}</p>
               <p className="text-xl sm:text-2xl font-bold">{totalPrice} {t('currency')}</p>
@@ -172,8 +179,7 @@ export function VisaApplicationForm({ selectedCountry: initialCountry, preview }
         isOpen={showPayment}
         onClose={() => setShowPayment(false)}
         onSuccess={handlePaymentSuccess}
-        country={selectedCountry}
-        travelers={fields.length}
+        totalAmount={totalPrice}
       />
     </div>
   );

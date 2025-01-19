@@ -17,7 +17,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { loginSchema } from "@/lib/validations/auth";
-import { authenticateUser } from "@/lib/auth";
+// import { authenticateUser } from "@/lib/auth";
 import { useAuth } from "./AuthProvider";
 import type { LoginFormData } from "@/lib/types/auth";
 import { auth } from '@/lib/firebase/config';

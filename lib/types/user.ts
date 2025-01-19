@@ -5,6 +5,7 @@ export interface User {
   role: "admin" | "user";
   createdAt: string;
   avatar?: string;
+  visaPrice: number;
 }
 
 export interface UserWithPassword extends User {

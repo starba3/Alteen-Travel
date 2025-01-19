@@ -21,6 +21,8 @@ export const getAllCountries = cache(async (): Promise<Country[]> => {
       countries.push(doc.data() as Country);
     });
 
+    // console.log(countries);
+
     // Sort countries by name for consistency
     return countries.sort((a, b) => a.name.localeCompare(b.name));
   } catch (error) {

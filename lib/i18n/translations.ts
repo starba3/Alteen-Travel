@@ -104,6 +104,8 @@ export const translations = {
         addTraveler: "Add Traveler",
         continue: "Continue to Payment",
         remove: "Remove",
+        totalDiscount: "Total Discount",
+        totalPrice: "Total Price",
       }
     },
     footer: {
@@ -231,6 +233,7 @@ export const translations = {
         continue: "المتابعة إلى الدفع",
         remove: "إزالة",
         totalPrice: "السعر الكلي",
+        totalDiscount: "الخصم الكلي",
       }
     },
     footer: {

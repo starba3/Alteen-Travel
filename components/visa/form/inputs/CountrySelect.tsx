@@ -30,7 +30,8 @@ export const CountrySelect = forwardRef<HTMLDivElement, CountrySelectProps>(
         try {
           const response = await fetch('/api/countries');
           const data = await response.json();
-          setCountries(data);
+          const filteredData = data.filter((country: Country) => country.serviceAvailable);
+          setCountries(filteredData);
         } catch (error) {
           console.error('Error fetching countries:', error);
         } finally {

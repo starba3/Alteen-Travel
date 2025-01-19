@@ -12,13 +12,11 @@ interface PaymentModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
-  country?: Country;
-  travelers: number;
+  totalAmount: number;
 }
 
-export function PaymentModal({ isOpen, onClose, onSuccess, country, travelers }: PaymentModalProps) {
+export function PaymentModal({ isOpen, onClose, onSuccess, totalAmount }: PaymentModalProps) {
   const [status, setStatus] = useState<"form" | "success" | "error">("form");
-  const totalAmount = country ? country.price * travelers : 0;
 
   const handleClose = () => {
     onClose();
