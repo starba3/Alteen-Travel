@@ -1,8 +1,69 @@
-export default function VisaOrdersPage() {
+import { Suspense } from 'react';
+import { getVisaOrders } from '@/lib/firebase-admin/visa-orders';
+import { ClientVisaOrdersTable } from './ClientVisaOrdersTable';
+import { VisaOrdersFilters, VisaOrderStatus } from '@/lib/types/visaOrders';
+import { Metadata } from 'next';
+import { getTranslations } from "@/lib/i18n/server";
+import { cookies } from "next/headers";
+import { VisaApplication } from '@/lib/types/VisaApplication';
+
+export const metadata: Metadata = {
+  title: 'Visa Orders Management',
+  description: 'Manage visa applications and orders',
+};
+
+interface PageProps {
+  searchParams: {
+    page?: string;
+    search?: string;
+    status?: string;
+  };
+}
+
+export default async function VisaOrdersPage({ searchParams }: PageProps) {
+
+  const locale = cookies().get("locale")?.value || "en";
+  const { t } = await getTranslations(locale);
+
+  const page = Number(searchParams.page) || 1;
+  const filters: VisaOrdersFilters = {
+    search: searchParams.search,
+    status: searchParams.status as VisaOrderStatus,
+  };
+
+  const result = await getVisaOrders(page, 10, filters);
+  console.log('Page component data:', result);
+  console.log('Page number:', page);
+  console.log('Filters:', filters);
+
   return (
-    <div>
-      <h1 className="text-2xl font-bold mb-6">Visa Orders</h1>
-      <p>Manage Visa Applications</p>
+    <div className="h-full flex-1 flex-col space-y-8 p-8 md:flex">
+      <div className="flex items-center justify-between space-y-2">
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight">{t('title')}</h2>
+          <p className="text-muted-foreground">
+            {t('subtitle')}
+          </p>
+        </div>
+      </div>
+
+      <Suspense fallback={<div>{t('loading')}</div>}>
+        <ClientVisaOrdersTable
+          data={result.data as VisaApplication[]}
+          pageCount={result.pageCount}
+          currentPage={page}
+        />
+      </Suspense>
+
+      {!result.data?.length ? (
+        <div className="text-center py-10">
+          <p className="text-muted-foreground">{t('noOrdersFound')}</p>
+        </div>
+      ) : (
+        <div className="mt-4 text-sm text-muted-foreground">
+          {t('totalOrders')} {result.totalCount}
+        </div>
+      )}
     </div>
   );
 }
