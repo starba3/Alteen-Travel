@@ -24,7 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ALL_COUNTRIES } from '@/lib/countries';
+import { getAllCountries, type Country } from '@/lib/countries';
 import Image from 'next/image';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithEmailLink, UserCredential } from 'firebase/auth';
 import { auth } from '@/lib/firebase/config';
@@ -59,6 +59,7 @@ export default function SalesRepresentativesPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [countrySearch, setCountrySearch] = useState('');
   const [enablePasswordUpdate, setEnablePasswordUpdate] = useState(false);
+  const [countries, setCountries] = useState<Country[]>([]);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -76,6 +77,9 @@ export default function SalesRepresentativesPage() {
 
   useEffect(() => {
     fetchSalesReps();
+    fetch('/api/countries')
+      .then(res => res.json())
+      .then(setCountries);
   }, []);
 
   const fetchSalesReps = async () => {
@@ -306,7 +310,7 @@ export default function SalesRepresentativesPage() {
     currentPage * ITEMS_PER_PAGE
   );
 
-  const filteredCountries = ALL_COUNTRIES.filter((country) =>
+  const filteredCountries = countries.filter((country) =>
     country.name.toLowerCase().includes(countrySearch.toLowerCase())
   );
 
@@ -526,7 +530,7 @@ export default function SalesRepresentativesPage() {
                       {formData.country && (
                         <div className="flex items-center gap-2">
                           <span className="inline-flex items-center text-base leading-none">
-                            {ALL_COUNTRIES.find(c => c.name === formData.country)?.flag}
+                            {countries.find(c => c.name === formData.country)?.flag}
                           </span>
                           <span>{formData.country}</span>
                         </div>

@@ -4,7 +4,7 @@ import { VisaApplicationForm } from "./VisaApplicationForm";
 
 interface VisaServicesLayoutProps {
   countries: Country[];
-  selectedCountry: Country;
+  selectedCountry: Country | null;
   onCountrySelect: (country: Country) => void;
 }
 
@@ -13,6 +13,17 @@ export function VisaServicesLayout({
   selectedCountry,
   onCountrySelect,
 }: VisaServicesLayoutProps) {
+
+  selectedCountry = selectedCountry || {
+    code: '',
+    name: '',
+    flag: '',
+    price: 0,
+    processingTime: '',
+    serviceAvailable: false
+  };
+
+  
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
       <div>

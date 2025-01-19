@@ -1,8 +1,7 @@
 "use client";
 
-import { forwardRef, useState } from "react";
+import { forwardRef, useState, useEffect } from "react";
 import { useDebounce } from "@/hooks/use-debounce";
-import { ALL_COUNTRIES } from "@/lib/countries";
 import { useOnClickOutside } from "@/hooks/use-click-outside";
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
@@ -21,10 +20,28 @@ export const CountrySelect = forwardRef<HTMLDivElement, CountrySelectProps>(
   ({ value, onChange, className, placeholder = "Select country" }, ref) => {
     const [isOpen, setIsOpen] = useState(false);
     const [search, setSearch] = useState("");
+    const [countries, setCountries] = useState<Country[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
     const debouncedSearch = useDebounce(search);
     const containerRef = useOnClickOutside<HTMLDivElement>(() => setIsOpen(false));
     
-    const filteredCountries = ALL_COUNTRIES.filter(country =>
+    useEffect(() => {
+      const fetchCountries = async () => {
+        try {
+          const response = await fetch('/api/countries');
+          const data = await response.json();
+          setCountries(data);
+        } catch (error) {
+          console.error('Error fetching countries:', error);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
+      fetchCountries();
+    }, []);
+
+    const filteredCountries = countries.filter(country =>
       country.name.toLowerCase().includes(debouncedSearch.toLowerCase())
     );
 
@@ -33,6 +50,18 @@ export const CountrySelect = forwardRef<HTMLDivElement, CountrySelectProps>(
       setIsOpen(false);
       setSearch("");
     };
+
+    if (isLoading) {
+      return (
+        <Button
+          variant="outline"
+          className={`w-full justify-between ${className}`}
+          disabled
+        >
+          Loading countries...
+        </Button>
+      );
+    }
 
     return (
       <div ref={containerRef} className="relative w-full">
@@ -75,8 +104,8 @@ export const CountrySelect = forwardRef<HTMLDivElement, CountrySelectProps>(
                   className="w-full justify-start"
                   onClick={() => handleSelect(country)}
                 >
-                <span className="text-xl">{country.flag}</span>
-                  <span>{country.name}</span>
+                  <span className="text-xl">{country.flag}</span>
+                  <span className="ml-2">{country.name}</span>
                 </Button>
               ))}
             </div>

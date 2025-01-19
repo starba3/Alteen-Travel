@@ -2,12 +2,12 @@
 
 import { forwardRef, useState, useEffect, useCallback } from "react";
 import { useDebounce } from "@/hooks/use-debounce";
-import { ALL_COUNTRIES } from "@/lib/countries";
 import { NationalityTrigger } from "./nationality/NationalityTrigger";
 import { NationalitySearch } from "./nationality/NationalitySearch";
 import { NationalityOption } from "./nationality/NationalityOption";
 import { useOnClickOutside } from "@/hooks/use-click-outside";
 import { useKeyboardNavigation } from "@/hooks/use-keyboard-navigation";
+import type { Country } from "@/lib/countries";
 
 interface NationalitySelectProps {
   value?: string;
@@ -23,14 +23,32 @@ const NationalitySelect = forwardRef<HTMLDivElement, NationalitySelectProps>(
   ({ value, onChange, onBlur, disabled, className, placeholder = "Select nationality" }, ref) => {
     const [isOpen, setIsOpen] = useState(false);
     const [search, setSearch] = useState("");
+    const [countries, setCountries] = useState<Country[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
     const debouncedSearch = useDebounce(search);
     const containerRef = useOnClickOutside<HTMLDivElement>(() => setIsOpen(false));
     
-    const filteredCountries = ALL_COUNTRIES.filter(country =>
+    useEffect(() => {
+      const fetchCountries = async () => {
+        try {
+          const response = await fetch('/api/countries');
+          const data = await response.json();
+          setCountries(data);
+        } catch (error) {
+          console.error('Error fetching countries:', error);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
+      fetchCountries();
+    }, []);
+
+    const filteredCountries = countries.filter(country =>
       country.name.toLowerCase().includes(debouncedSearch.toLowerCase())
     );
 
-    const selectedCountry = ALL_COUNTRIES.find(c => c.code === value);
+    const selectedCountry = countries.find(c => c.code === value);
 
     const handleSelect = useCallback((code: string) => {
       onChange?.(code);
@@ -51,6 +69,16 @@ const NationalitySelect = forwardRef<HTMLDivElement, NationalitySelectProps>(
         setFocusedIndex(-1);
       }
     }, [isOpen, setFocusedIndex]);
+
+    if (isLoading) {
+      return (
+        <div className={`w-full h-12 rounded-lg border-gray-200 ${className}`}>
+          <div className="flex items-center px-3 h-full">
+            <span className="text-muted-foreground">Loading...</span>
+          </div>
+        </div>
+      );
+    }
 
     return (
       <div ref={containerRef} className="relative w-full">

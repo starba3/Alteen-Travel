@@ -1,13 +1,30 @@
 "use client";
 
-import { useState } from "react";
-import { ALL_COUNTRIES } from "@/lib/countries";
+import { useEffect, useState } from "react";
+import { type Country } from "@/lib/countries";
 import { CountrySelection } from "./CountrySelection";
 import { VisaApplicationForm } from "./VisaApplicationForm";
 
+// Create a function to fetch countries that runs on the client
+async function fetchCountries() {
+  const response = await fetch('/api/countries'); // You'll need to create this API route
+  return response.json();
+}
+
 export function FeaturedCountries() {
-  const [selectedCountry, setSelectedCountry] = useState(ALL_COUNTRIES[0]);
-  const featuredCountries = ALL_COUNTRIES.slice(0, 4);
+  const [countries, setCountries] = useState<Country[]>([]);
+  const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
+
+  useEffect(() => {
+    fetchCountries().then(data => {
+      setCountries(data);
+      setSelectedCountry(data[0]);
+    });
+  }, []);
+
+  if (!selectedCountry) return <div>Loading...</div>;
+
+  const featuredCountries = countries.slice(0, 4);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
