@@ -12,7 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { PlusCircle, Pencil, Search } from 'lucide-react';
+import { PlusCircle, Pencil, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -30,6 +30,7 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithE
 import { auth } from '@/lib/firebase/config';
 import { Switch } from "@/components/ui/switch";
 import { getUserWithoutPassword } from '@/lib/data/users';
+import { Pagination } from '@/components/ui/pagination';
 
 interface SalesRepresentative {
   uId: string;
@@ -349,30 +350,30 @@ export default function SalesRepresentativesPage() {
       </div>
 
       <div className="rounded-md border">
-        <Table>
-          <TableHeader>
+        <Table className="min-w-full bg-white border rounded-lg">
+          <TableHeader className="bg-gray-50">
             <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Company</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Phone</TableHead>
-              <TableHead>Country</TableHead>
-              <TableHead>State</TableHead>
-              <TableHead>Visa Price</TableHead>
+              <TableHead className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</TableHead>
+              <TableHead className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Company</TableHead>
+              <TableHead className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</TableHead>
+              <TableHead className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</TableHead>
+              <TableHead className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Country</TableHead>
+              <TableHead className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">State</TableHead>
+              <TableHead className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Visa Price</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody>
+          <TableBody className="divide-y divide-gray-200">
             {paginatedReps.map((rep) => (
               <TableRow key={rep.uId}>
-                <TableCell>{rep.name}</TableCell>
-                <TableCell>{rep.companyName}</TableCell>
-                <TableCell>{rep.email}</TableCell>
-                <TableCell>{rep.phoneNumber}</TableCell>
-                <TableCell>{rep.country}</TableCell>
-                <TableCell>{rep.state}</TableCell>
-                <TableCell>${rep.visaPrice}</TableCell>
-                <TableCell>
+                <TableCell className="px-6 py-4 whitespace-nowrap">{rep.name}</TableCell>
+                <TableCell className="px-6 py-4 whitespace-nowrap">{rep.companyName}</TableCell>
+                <TableCell className="px-6 py-4 whitespace-nowrap">{rep.email}</TableCell>
+                <TableCell className="px-6 py-4 whitespace-nowrap">{rep.phoneNumber}</TableCell>
+                <TableCell className="px-6 py-4 whitespace-nowrap">{rep.country}</TableCell>
+                <TableCell className="px-6 py-4 whitespace-nowrap">{rep.state}</TableCell>
+                <TableCell className="px-6 py-4 whitespace-nowrap">${rep.visaPrice}</TableCell>
+                <TableCell className="px-6 py-4 whitespace-nowrap">
                   <Button 
                     variant="ghost" 
                     size="sm" 
@@ -389,28 +390,12 @@ export default function SalesRepresentativesPage() {
         </Table>
       </div>
 
-      {/* Pagination Controls */}
-      <div className="flex justify-center gap-2 mt-4">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-          disabled={currentPage === 1}
-        >
-          Previous
-        </Button>
-        <span className="py-2 px-3 text-sm">
-          Page {currentPage} of {totalPages}
-        </span>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-          disabled={currentPage === totalPages}
-        >
-          Next
-        </Button>
-      </div>
+      <Pagination
+        currentPage={currentPage}
+        totalItems={filteredReps.length}
+        itemsPerPage={ITEMS_PER_PAGE}
+        onPageChange={setCurrentPage}
+      />
 
       {/* Add/Edit Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
