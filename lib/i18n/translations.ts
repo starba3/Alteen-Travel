@@ -125,8 +125,8 @@ export const translations = {
       subscribe: "Subscribe",
       enterYourEmail: "Enter your email",
     },
-    VisaOrders: {
-      title: "Visa Orders Management",
+    visaOrders: {
+      title: "Visa Orders",
       searchPlaceholder: "Search by email...",
       status: "Status",
       all: "All",
@@ -146,6 +146,16 @@ export const translations = {
       next: "Next",
       showingResults: "Showing {start} to {end} of {total} results",
       totalOrders: "Total Orders: {count}",
+    },
+    emails: {
+      visaStatus: {
+        greeting: "Dear",
+        approved: "Your visa application has been approved. You can now proceed with your travel plans.",
+        rejected: "Unfortunately, your visa application has been rejected. Please contact our support team for more information.",
+        pending: "Your visa application is currently under review. We will notify you of any updates.",
+        referenceNumber: "Reference Number",
+        footer: "If you have any questions, please don't hesitate to contact our support team.",
+      },
     },
   },
   ar: {
@@ -275,7 +285,7 @@ export const translations = {
       subscribe: "الإشتراك",
       enterYourEmail: "أدخل عنوان بريدك الإلكتروني",
     },
-    VisaOrders: {
+    visaOrders: {
       title: "إدارة الطلبات",
       searchPlaceholder: "ابحث بالبريد الإلكتروني...",
       status: "الحالة",
@@ -296,6 +306,16 @@ export const translations = {
       next: "التالي",
       showingResults: "عرض {start} إلى {end} من {total} نتائج",
       totalOrders: "عدد الطلبات: {count}",
+    },
+    emails: {
+      visaStatus: {
+        greeting: "Dear",
+        approved: "Your visa application has been approved. You can now proceed with your travel plans.",
+        rejected: "Unfortunately, your visa application has been rejected. Please contact our support team for more information.",
+        pending: "Your visa application is currently under review. We will notify you of any updates.",
+        referenceNumber: "Reference Number",
+        footer: "If you have any questions, please don't hesitate to contact our support team.",
+      },
     },
   }
 } as const;

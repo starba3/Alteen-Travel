@@ -15,7 +15,7 @@ export async function getVisaOrders(
     let query: Query = firestore.collection('visa');
     
     // Debug: Log initial query
-    console.log('Initial query params:', { page, pageSize, filters });
+    // console.log('Initial query params:', { page, pageSize, filters });
 
     // Apply filters if they exist
     if (filters?.search) {
@@ -28,11 +28,11 @@ export async function getVisaOrders(
     }
 
     // Debug: Log query after filters
-    const debugSnapshot = await query.get();
-    console.log('Data after filters:', debugSnapshot.size, 'documents found');
-    debugSnapshot.docs.forEach(doc => {
-      console.log('Document:', { id: doc.id, data: doc.data() });
-    });
+    // const debugSnapshot = await query.get();
+    // console.log('Data after filters:', debugSnapshot.size, 'documents found');
+    // debugSnapshot.docs.forEach(doc => {
+    //   console.log('Document:', { id: doc.id, data: doc.data() });
+    // });
 
     // Order by createdAt
     query = query.orderBy('createdAt', 'desc');
@@ -67,11 +67,11 @@ export async function getVisaOrders(
     }));
 
     // Debug: Log final results
-    console.log('Final processed data:', {
-      dataLength: visaOrders.length,
-      firstItem: visaOrders[0],
-      totalDocs: snapshot.size
-    });
+    // console.log('Final processed data:', {
+    //   dataLength: visaOrders.length,
+    //   firstItem: visaOrders[0],
+    //   totalDocs: snapshot.size
+    // });
 
     return {
       data: visaOrders,

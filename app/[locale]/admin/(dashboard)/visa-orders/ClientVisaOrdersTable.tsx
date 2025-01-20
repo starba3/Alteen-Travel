@@ -1,16 +1,22 @@
 'use client';
 
 import { useState } from 'react';
-import { Search, Eye } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
 import { Pagination } from '@/components/ui/pagination';
-import Link from 'next/link';
 import { format } from 'date-fns';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { VisaApplication } from "@/lib/types/VisaApplication";
 import { useTranslations } from '@/lib/i18n/hooks';
 import { useParams } from 'next/navigation';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { VisaOrderDialog } from './VisaOrderDialog';
 
 interface Props {
   data: VisaApplication[];
@@ -33,73 +39,96 @@ export function ClientVisaOrdersTable({ data, pageCount, currentPage }: Props) {
     router.push(`?${params.toString()}`);
   };
 
+  const handleStatusChange = (status: string) => {
+    const params = new URLSearchParams(searchParams);
+    params.set('status', status);
+    params.delete('page');
+    router.push(`?${params.toString()}`);
+  };
+
   const handlePageChange = (page: number) => {
     const params = new URLSearchParams(searchParams);
     params.set('page', String(page));
     router.push(`?${params.toString()}`);
   };
-
+  // dir={locale === 'ar' ? 'rtl' : 'ltr'}
   return (
     <>
-      {/* Search Bar */}
-      <div className="relative mb-6">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
-        <Input
-          type="text"
-          placeholder={t("searchPlaceholder")}
-          className="pl-10 pr-4 py-2 border rounded-lg w-full max-w-md"
-          value={searchQuery}
-          onChange={(e) => {
-            setSearchQuery(e.target.value);
-            handleSearch(e.target.value);
-          }}
-        />
+      <div className="flex gap-4 mb-6" dir={locale === 'ar' ? 'rtl' : 'ltr'}>
+        <div className="relative flex-1" >
+          <Search className={`absolute ${locale === 'ar' ? 'right-3' : 'left-3'} top-1/2 transform -translate-y-1/2 text-gray-400`} size={20} />
+          <Input
+            type="text"
+            placeholder={t('visaOrders.searchPlaceholder')}
+            className="pl-10 pr-4 py-2 w-full max-w-md"
+            value={searchQuery}
+            dir={locale === 'ar' ? 'rtl' : 'ltr'}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              handleSearch(e.target.value);
+            }}
+          />
+        </div>
+        <Select
+          defaultValue="all"
+          onValueChange={handleStatusChange}
+        >
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Filter by status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Status</SelectItem>
+            <SelectItem value="pending">Pending</SelectItem>
+            <SelectItem value="approved">Approved</SelectItem>
+            <SelectItem value="rejected">Rejected</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       {/* Table */}
       <div className="overflow-x-auto">
-        <table className="min-w-full bg-white border rounded-lg">
+        <table className={`min-w-full bg-white border rounded-lg ${locale === 'ar' ? 'text-right' : 'text-left'}`}>
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Order ID
+              <th className={`px-6 py-3 text-${locale === 'ar' ? 'right' : 'left'} text-xs font-medium text-gray-500 uppercase tracking-wider`}>
+                {t('visaOrders.orderID')}
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Applicant Name
+              <th className={`px-6 py-3 text-${locale === 'ar' ? 'right' : 'left'} text-xs font-medium text-gray-500 uppercase tracking-wider`}>
+                {t('visaOrders.applicantName')}
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Email
+              <th className={`px-6 py-3 text-${locale === 'ar' ? 'right' : 'left'} text-xs font-medium text-gray-500 uppercase tracking-wider`}>
+                {t('visaOrders.email')}
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Phone
+              <th className={`px-6 py-3 text-${locale === 'ar' ? 'right' : 'left'} text-xs font-medium text-gray-500 uppercase tracking-wider`}>
+                {t('visaOrders.phone')}
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Country
+              <th className={`px-6 py-3 text-${locale === 'ar' ? 'right' : 'left'} text-xs font-medium text-gray-500 uppercase tracking-wider`}>
+                {t('visaOrders.country')}
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Persons
+              <th className={`px-6 py-3 text-${locale === 'ar' ? 'right' : 'left'} text-xs font-medium text-gray-500 uppercase tracking-wider`}>
+                {t('visaOrders.persons')}
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Status
+              <th className={`px-6 py-3 text-${locale === 'ar' ? 'right' : 'left'} text-xs font-medium text-gray-500 uppercase tracking-wider`}>
+                {t('visaOrders.status')}
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Date
+              <th className={`px-6 py-3 text-${locale === 'ar' ? 'right' : 'left'} text-xs font-medium text-gray-500 uppercase tracking-wider`}>
+                {t('visaOrders.date')}
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Actions
+              <th className={`px-6 py-3 text-${locale === 'ar' ? 'right' : 'left'} text-xs font-medium text-gray-500 uppercase tracking-wider`}>
+                {t('visaOrders.actions')}
               </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
             {data.map((order) => (
               <tr key={order.id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap text-sm">{order.id}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm">{order.nameOnHeader}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm">{order.email}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm">{order.phoneNumber}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm">{order.country}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm">{order.persons.length}</td>
-                <td className="px-6 py-4 whitespace-nowrap">
+                <td className={`px-6 py-4 whitespace-nowrap text-sm ${locale === 'ar' ? 'text-right' : 'text-left'}`}>{order.id}</td>
+                <td className={`px-6 py-4 whitespace-nowrap text-sm ${locale === 'ar' ? 'text-right' : 'text-left'}`}>{order.nameOnHeader}</td>
+                <td className={`px-6 py-4 whitespace-nowrap text-sm ${locale === 'ar' ? 'text-right' : 'text-left'}`}>{order.email}</td>
+                <td className={`px-6 py-4 whitespace-nowrap text-sm ${locale === 'ar' ? 'text-right' : 'text-left'}`}>{order.phoneNumber}</td>
+                <td className={`px-6 py-4 whitespace-nowrap text-sm ${locale === 'ar' ? 'text-right' : 'text-left'}`}>{order.country}</td>
+                <td className={`px-6 py-4 whitespace-nowrap text-sm ${locale === 'ar' ? 'text-right' : 'text-left'}`}>{order.persons.length}</td>
+                <td className={`px-6 py-4 whitespace-nowrap ${locale === 'ar' ? 'text-right' : 'text-left'}`}>
                   <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
                     order.status === 'approved' ? 'bg-green-100 text-green-800' :
                     order.status === 'rejected' ? 'bg-red-100 text-red-800' :
@@ -112,11 +141,7 @@ export function ClientVisaOrdersTable({ data, pageCount, currentPage }: Props) {
                   {order.createdAt && format(new Date(order.createdAt), 'MMM d, yyyy')}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <Link href={`/admin/visa-orders/${order.id}`}>
-                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                      <Eye className="h-4 w-4" />
-                    </Button>
-                  </Link>
+                  <VisaOrderDialog order={order} />
                 </td>
               </tr>
             ))}

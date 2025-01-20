@@ -32,18 +32,15 @@ export default async function VisaOrdersPage({ searchParams }: PageProps) {
   };
 
   const result = await getVisaOrders(page, 10, filters);
-  console.log('Page component data:', result);
-  console.log('Page number:', page);
-  console.log('Filters:', filters);
-
+  // console.log('Page component data:', result);
+  // console.log('Page number:', page);
+  // console.log('Filters:', filters);
+  // dir={locale === 'ar' ? 'rtl' : 'ltr'}
   return (
-    <div className="h-full flex-1 flex-col space-y-8 p-8 md:flex">
-      <div className="flex items-center justify-between space-y-2">
+    <div className="h-full flex-1  flex-col space-y-8 p-8 md:flex " dir={locale === 'ar' ? 'rtl' : 'ltr'}>
+      <div className="flex items-center justify-between space-y-2" >
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">{t('title')}</h2>
-          <p className="text-muted-foreground">
-            {t('subtitle')}
-          </p>
+          <h2 className="text-2xl font-bold tracking-tight" >{t('visaOrders.title')}</h2>
         </div>
       </div>
 
@@ -54,16 +51,7 @@ export default async function VisaOrdersPage({ searchParams }: PageProps) {
           currentPage={page}
         />
       </Suspense>
-
-      {!result.data?.length ? (
-        <div className="text-center py-10">
-          <p className="text-muted-foreground">{t('noOrdersFound')}</p>
-        </div>
-      ) : (
-        <div className="mt-4 text-sm text-muted-foreground">
-          {t('totalOrders')} {result.totalCount}
-        </div>
-      )}
+      
     </div>
   );
 }

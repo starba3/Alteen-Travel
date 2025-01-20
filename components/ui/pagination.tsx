@@ -2,6 +2,8 @@
 
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useTranslations } from '@/lib/i18n/hooks';
+import { useParams } from 'next/navigation';
 
 interface PaginationProps {
   currentPage: number;
@@ -16,6 +18,9 @@ export function Pagination({
   itemsPerPage,
   onPageChange,
 }: PaginationProps) {
+  const params = useParams();
+  const locale = params.locale as string;
+  const { t } = useTranslations(params.locale as string);
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
@@ -31,7 +36,7 @@ export function Pagination({
   if (totalItems === 0) return null;
 
   return (
-    <div className="flex items-center justify-between px-4 py-3 bg-white border-t border-gray-200 sm:px-6">
+    <div className={`flex flex-row${locale === 'ar' ? '-reverse' : ''} items-center justify-between px-4 py-3 bg-white border-t border-gray-200 sm:px-6`}>
       <div className="flex items-center">
         <p className="text-sm text-gray-700">
           Showing{' '}
