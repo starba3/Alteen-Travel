@@ -1,9 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { collection, getDocs, query, where, addDoc, updateDoc, doc } from 'firebase/firestore';
-import { db } from '@/lib/firebase/config';
 import { Button } from '@/components/ui/button';
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -12,41 +10,18 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { PlusCircle, Pencil, Search, ChevronLeft, ChevronRight } from 'lucide-react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useToast } from '@/hooks/use-toast';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { getAllCountries, type Country } from '@/lib/countries';
-import Image from 'next/image';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithEmailLink, UserCredential } from 'firebase/auth';
-import { auth } from '@/lib/firebase/config';
-import { Switch } from "@/components/ui/switch";
-import { getUserWithoutPassword } from '@/lib/data/users';
-import { Pagination } from '@/components/ui/pagination';
+import { type Country } from '@/lib/countries';
+import { auth, db } from '@/lib/firebase/config';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { addDoc, collection, doc, getDocs, query, updateDoc, where } from 'firebase/firestore';
+import { Pencil, PlusCircle, Search } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
-interface SalesRepresentative {
-  uId: string;
-  name: string;
-  email: string;
-  password?: string;
-  companyName: string;
-  companyEmail: string;
-  phoneNumber: string;
-  country: string;
-  countryKey: string;
-  state: string;
-  address: string;
-  visaPrice: string;
-  dateOfRegister: string;
-}
+import { Pagination } from '@/components/ui/pagination';
+import { SalesRepresentative } from '@/lib/types/salesRepresentitives';
+import { SalesRepFormDialog } from './SalesRepFormDialog';
+
 
 const ITEMS_PER_PAGE = 10;
 
@@ -305,7 +280,6 @@ export default function SalesRepresentativesPage() {
   });
 
   // Pagination
-  const totalPages = Math.ceil(filteredReps.length / ITEMS_PER_PAGE);
   const paginatedReps = filteredReps.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
@@ -397,201 +371,22 @@ export default function SalesRepresentativesPage() {
         onPageChange={setCurrentPage}
       />
 
-      {/* Add/Edit Modal */}
-      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>
-              {editingRep ? 'Edit Representative' : 'Add New Representative'}
-            </DialogTitle>
-          </DialogHeader>
-          <form 
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSubmit(e);
-            }} 
-            className="space-y-4"
-          >
-            <div className="grid grid-cols-2 gap-4">
-              <div className="grid gap-2">
-                <Label htmlFor="name">Name</Label>
-                <Input
-                  id="name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="password">Password</Label>
-                {editingRep ? (
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <Label htmlFor="enablePassword" className="text-sm text-muted-foreground">
-                        Update Password
-                      </Label>
-                      <Switch
-                        id="enablePassword"
-                        checked={enablePasswordUpdate}
-                        onCheckedChange={setEnablePasswordUpdate}
-                      />
-                    </div>
-                    {enablePasswordUpdate && (
-                      <Input
-                        id="password"
-                        name="password"
-                        type="password"
-                        value={formData.password}
-                        onChange={handleInputChange}
-                        required
-                        placeholder="Enter new password"
-                      />
-                    )}
-                  </div>
-                ) : (
-                  <Input
-                    id="password"
-                    name="password"
-                    type="password"
-                    value={formData.password}
-                    onChange={handleInputChange}
-                    required
-                    placeholder="Enter password"
-                  />
-                )}
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="companyName">Company Name</Label>
-                <Input
-                  id="companyName"
-                  name="companyName"
-                  value={formData.companyName}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="companyEmail">Company Email</Label>
-                <Input
-                  id="companyEmail"
-                  name="companyEmail"
-                  type="email"
-                  value={formData.companyEmail}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="phoneNumber">Phone Number</Label>
-                <Input
-                  id="phoneNumber"
-                  name="phoneNumber"
-                  value={formData.phoneNumber}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="country">Country</Label>
-                <Select
-                  value={formData.country}
-                  onValueChange={handleCountryChange}
-                  required
-                >
-                  <SelectTrigger id="country" className="flex items-center gap-2">
-                    <SelectValue placeholder="Select a country">
-                      {formData.country && (
-                        <div className="flex items-center gap-2">
-                          <span className="inline-flex items-center text-base leading-none">
-                            {countries.find(c => c.name === formData.country)?.flag}
-                          </span>
-                          <span>{formData.country}</span>
-                        </div>
-                      )}
-                    </SelectValue>
-                  </SelectTrigger>
-                  <SelectContent>
-                    <div className="sticky top-0 p-2 bg-background">
-                      <Input
-                        placeholder="Search countries..."
-                        value={countrySearch}
-                        onChange={(e) => setCountrySearch(e.target.value)}
-                        className="h-8"
-                      />
-                    </div>
-                    <div className="max-h-[300px] overflow-y-auto">
-                      {filteredCountries.map((country) => (
-                        <SelectItem 
-                          key={country.code} 
-                          value={country.name}
-                          className="flex items-center gap-2"
-                        >
-                          <div className="flex justify-start items-center gap-2">
-                            <span className="inline-flex items-center text-base leading-none">
-                              {country.flag}
-                            </span>
-                            <span>{country.name}</span>
-                          </div>
-                        </SelectItem>
-                      ))}
-                    </div>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="state">State</Label>
-                <Input
-                  id="state"
-                  name="state"
-                  value={formData.state}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="address">Address</Label>
-                <Input
-                  id="address"
-                  name="address"
-                  value={formData.address}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="visaPrice">Visa Price</Label>
-                <Input
-                  id="visaPrice"
-                  name="visaPrice"
-                  value={formData.visaPrice}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-            </div>
-            <div className="flex justify-end gap-2">
-              <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)}>
-                Cancel
-              </Button>
-              <Button type="submit" disabled={loading}>
-                {editingRep ? 'Update' : 'Add'} Representative
-              </Button>
-            </div>
-          </form>
-        </DialogContent>
-      </Dialog>
+      <SalesRepFormDialog
+        isOpen={isModalOpen}
+        onOpenChange={setIsModalOpen}
+        editingRep={editingRep}
+        formData={formData}
+        loading={loading}
+        enablePasswordUpdate={enablePasswordUpdate}
+        countrySearch={countrySearch}
+        countries={countries}
+        filteredCountries={filteredCountries}
+        onSubmit={handleSubmit}
+        onInputChange={handleInputChange}
+        onCountryChange={handleCountryChange}
+        setEnablePasswordUpdate={setEnablePasswordUpdate}
+        setCountrySearch={setCountrySearch}
+      />
     </div>
   );
 }

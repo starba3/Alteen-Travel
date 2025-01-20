@@ -4,16 +4,8 @@ import { useState } from 'react';
 import { Search, Edit2, Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { type Country } from '@/lib/countries';
 import { Switch } from '@/components/ui/switch';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
 import { Pagination } from '@/components/ui/pagination';
+import { PriceUpdateDialog } from './PriceUpdateDialog';
 
 interface Props {
   initialCountries: Country[];
@@ -40,18 +32,6 @@ export default function ClientVisaCountriesTable({ initialCountries }: Props) {
   const endIndex = startIndex + itemsPerPage;
   const currentCountries = filteredCountries.slice(startIndex, endIndex);
 
-  // Pagination controls
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
-
-  const handlePrevPage = () => {
-    setCurrentPage(prev => Math.max(prev - 1, 1));
-  };
-
-  const handleNextPage = () => {
-    setCurrentPage(prev => Math.min(prev + 1, totalPages));
-  };
 
   const handleToggleActive = async (code: string, currentStatus: boolean) => {
     setLoadingStates(prev => ({ ...prev, [code]: true }));
@@ -163,50 +143,16 @@ export default function ClientVisaCountriesTable({ initialCountries }: Props) {
                 <td className="px-6 py-4 whitespace-nowrap">{country.code}</td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   ${country.price}
-                  <Dialog 
-                    open={dialogStates[country.code]} 
+                  <PriceUpdateDialog
+                    countryCode={country.code}
+                    countryName={country.name}
+                    currentPrice={editingPrice?.price || country.price}
+                    isOpen={dialogStates[country.code]}
+                    isUpdating={updatingPrice}
                     onOpenChange={(open) => open ? handleOpenDialog(country.code) : handleCloseDialog(country.code)}
-                  >
-                    <DialogTrigger asChild>
-                      <Button variant="ghost" size="sm" className="ml-2">
-                        <Edit2 className="h-4 w-4" />
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>Update Price for {country.name}</DialogTitle>
-                      </DialogHeader>
-                      <div className="py-4">
-                        <Input
-                          type="number"
-                          placeholder="Enter new price"
-                          defaultValue={country.price}
-                          onChange={(e) => setEditingPrice({ 
-                            id: country.code, 
-                            price: parseFloat(e.target.value) 
-                          })}
-                        />
-                        <div className="mt-4 flex justify-end space-x-2">
-                          <Button
-                            onClick={() => handleUpdatePrice(
-                              country.code,
-                              editingPrice?.price || country.price
-                            )}
-                            disabled={updatingPrice}
-                          >
-                            {updatingPrice ? (
-                              <>
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                Updating...
-                              </>
-                            ) : (
-                              'Save'
-                            )}
-                          </Button>
-                        </div>
-                      </div>
-                    </DialogContent>
-                  </Dialog>
+                    onUpdatePrice={handleUpdatePrice}
+                    onPriceChange={setEditingPrice}
+                  />
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <Switch
