@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { cookies } from 'next/headers'
-import { decryptServer } from '@/lib/encryption/serverEncryption';
+// import { decryptServer } from '@/lib/encryption/serverEncryption';
 
 const locales = ['en', 'ar']
 
@@ -16,11 +16,11 @@ export async function middleware(request: NextRequest) {
   // Check for admin routes
   if (pathname.includes('/admin') ) {
     const isAdmin =  cookies().get('isAdmin')?.value || '';
-    const isAdminDecrypted = decryptServer(isAdmin) || '';
-    console.log(isAdminDecrypted);
-    const authHeader = request.headers.get('authorization');
-    console.log(authHeader);
-    if (!authHeader) {
+    // const isAdminDecrypted = decryptServer(isAdmin) || '';
+    // console.log(isAdminDecrypted);
+    // const authHeader = request.headers.get('authorization');
+    // console.log(authHeader);
+    if (!isAdmin) {
       return NextResponse.redirect(new URL('/', request.url));
     }
   }

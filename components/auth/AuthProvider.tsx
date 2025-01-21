@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-import { encryptData } from "@/lib/encryption/utility";
+// import { encryptData } from "@/lib/encryption/utility";
 import Cookies from 'js-cookie';
 import { getStoredAuth, clearStoredAuth } from "@/lib/auth";
 import { User as FirebaseUser, getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
@@ -45,41 +45,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setIsAdmin(data?.isAdmin === true);
           setUserData(data);
           
-          // localStorage.setItem('isAdmin', String(data?.isAdmin === true));
-          // localStorage.setItem('userData', JSON.stringify(data));
+          localStorage.setItem('isAdmin', String(data?.isAdmin === true));
+          localStorage.setItem('userData', JSON.stringify(data));
 
-          let userDataEncrypted = '';
-
-          encryptData(data).then(encrypted => {
-            userDataEncrypted = encrypted;
-          });
-
-
-
-          Cookies.set('userData', userDataEncrypted, {
-            secure: true, // Ensure secure cookies for production
-            sameSite: 'strict',
-          });
-
-          // Cookies.set('isAdmin', isAdminEncrypted, {
-          //   secure: true, // Ensure secure cookies for production
-          //   sameSite: 'strict',
-          // });
+          Cookies.set('isAdmin', String(data?.isAdmin === true));
           
           // Store auth data
           const token = await user.getIdToken();
 
-          Cookies.set('authToken', encryptData(token), {
-            secure: true, // Ensure secure cookies for production
-            sameSite: 'strict',
-          });
-
-          Cookies.set('authUser', encryptData(JSON.stringify(user)), {
-            secure: true, // Ensure secure cookies for production
-            sameSite: 'strict',
-          });
-          // localStorage.setItem('authUser', JSON.stringify(user));
-          // localStorage.setItem('authToken', token);
+          localStorage.setItem('authUser', JSON.stringify(user));
+          localStorage.setItem('authToken', token);
 
           
         } catch (error) {
@@ -110,23 +85,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       
       setIsAdmin(isAdminUser);
 
-      Cookies.set('isAdmin', encryptData(String(isAdminUser)), {
-        secure: true, // Ensure secure cookies for production
-        sameSite: 'strict',
-      });
+      // Cookies.set('isAdmin', encryptData(String(isAdminUser)), {
+      //   secure: true, // Ensure secure cookies for production
+      //   sameSite: 'strict',
+      // });
       
       // Store auth data
       const token = await user.getIdToken();
 
-      Cookies.set('authUser', encryptData(JSON.stringify(user)), {
-        secure: true, // Ensure secure cookies for production
-        sameSite: 'strict',
-      });
+      localStorage.setItem('authUser', JSON.stringify(user));
+      localStorage.setItem('authToken', token);
+      localStorage.setItem('isAdmin', String(isAdminUser));
 
-      Cookies.set('authToken', encryptData(token), {
-        secure: true, // Ensure secure cookies for production
-        sameSite: 'strict',
-      });
+      Cookies.set('isAdmin', String(isAdminUser));
+      // Cookies.set('authUser', encryptData(JSON.stringify(user)), {
+      //   secure: true, // Ensure secure cookies for production
+      //   sameSite: 'strict',
+      // });
+
+      // Cookies.set('authToken', encryptData(token), {
+      //   secure: true, // Ensure secure cookies for production
+      //   sameSite: 'strict',
+      // });
       
     } catch (error) {
       console.error("Error setting up user session:", error);

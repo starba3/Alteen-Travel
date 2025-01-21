@@ -18,6 +18,7 @@ export function FeaturedCountries() {
   useEffect(() => {
     fetchCountries().then(data => {
       setCountries(data);
+      console.log("countries", data);
       setSelectedCountry(data.filter((country: Country) => country.serviceAvailable)[0]);
     });
   }, []);

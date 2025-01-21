@@ -1,31 +1,50 @@
 import * as jose from 'jose';
 import { FirestoreUserData } from '@/lib/types/user';
 
-// Symmetric encryption using AES-GCM (can be used on both client and server)
-export async function encryptData(data: FirestoreUserData | any) {
-    const secretKey = process.env.ENCRYPTION_SECRET_KEY;
-    const encodedSecretKey = new TextEncoder().encode(secretKey); // Convert string key to Uint8Array
+// Store the key for reuse
+let secretKey: CryptoKey | null = null;
 
-    const encryptedData = await new jose.EncryptJWT({ data })
-        .setProtectedHeader({ alg: 'dir', enc: 'A256GCM' }) // AES-GCM encryption
-        .setIssuedAt()
-        .setExpirationTime('2h')
-        .encrypt(encodedSecretKey);
+// Initialize or get the encryption key
+async function getSecretKey() {
+    if (secretKey) return secretKey;
 
-    return encryptedData; // Return the encrypted JWT token
+    // Use environment variable or generate a new key
+    const keyBytes = new TextEncoder().encode(process.env.NEXT_PUBLIC_ENCRYPTION_SECRET_KEY);
+    
+
+    secretKey = await crypto.subtle.importKey(
+        'raw',
+        keyBytes,
+        { name: 'AES-GCM', length: 256 },
+        true,
+        ['encrypt', 'decrypt']
+    );
+
+    return secretKey;
 }
 
-export async function decryptData(encryptedData: FirestoreUserData | any) {
-  const secretKey = process.env.ENCRYPTION_SECRET_KEY;
-  const encodedSecretKey = new TextEncoder().encode(secretKey); // Same key for decryption
+// Symmetric encryption using AES-GCM (can be used on both client and server)
+export async function encryptData(data: any) {
+    const key = await getSecretKey();
 
-  try {
-    const { payload } = await jose.jwtDecrypt(encryptedData, encodedSecretKey);
-    return payload.data; // Return the decrypted data
-  } catch (err) {
-    console.error('Decryption failed:', err);
-    return null;
-  }
+    const encryptedData = await new jose.EncryptJWT({ data })
+        .setProtectedHeader({ alg: 'dir', enc: 'A256GCM' })
+        .setIssuedAt()
+        .setExpirationTime('2h')
+        .encrypt(key);
+
+    return encryptedData;
+}
+
+export async function decryptData(encryptedData: string) {
+    try {
+        const key = await getSecretKey();
+        const { payload } = await jose.jwtDecrypt(encryptedData, key);
+        return payload.data;
+    } catch (err) {
+        console.error('Decryption failed:', err);
+        return null;
+    }
 }
 
 // Asymmetric encryption example (RSA) (can be used on both client and server)

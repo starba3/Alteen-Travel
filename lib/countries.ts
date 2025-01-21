@@ -13,20 +13,31 @@ export interface Country {
 // Make this a server-side function with React cache
 export const getAllCountries = cache(async (): Promise<Country[]> => {
   try {
+    console.log('Starting getAllCountries fetch...');
+    
     const countriesRef = firestore.collection('visaCountries');
+    console.log('Collection reference created');
+    
     const snapshot = await countriesRef.get();
+    console.log('Snapshot received, size:', snapshot.size);
     
     const countries: Country[] = [];
     snapshot.forEach(doc => {
-      countries.push(doc.data() as Country);
+      const data = doc.data();
+      console.log('Document data:', data);
+      countries.push(data as Country);
     });
 
-    // console.log(countries);
+    console.log('Total countries fetched:', countries.length);
 
-    // Sort countries by name for consistency
     return countries.sort((a, b) => a.name.localeCompare(b.name));
-  } catch (error) {
-    console.error('Error fetching countries from Firebase:', error);
+  } catch (error: any) {
+    console.error('Detailed error in getAllCountries:', {
+      error,
+      message: error.message,
+      code: error.code,
+      stack: error.stack
+    });
     throw error;
   }
 });
