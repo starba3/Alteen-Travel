@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { useTranslations } from "@/lib/i18n/hooks";
 import { useParams } from "next/navigation";
+import Cookies from 'js-cookie';
 
 interface UserProfileProps {
   variant?: "desktop" | "mobile";
@@ -22,6 +23,7 @@ export function UserProfile({ variant = "desktop", onSignOut }: UserProfileProps
   const params = useParams();
   const locale = params.locale as string;
   const { t } = useTranslations(params.locale as string);
+  
   
   if (!isAuthenticated) return null;
 

@@ -25,7 +25,7 @@ export function Sidebar() {
       <Button
         variant="ghost"
         size="icon"
-        className="fixed top-4 left-4 z-50 md:hidden"
+        className="fixed top-4 right-4 z-50 md:hidden"
         onClick={() => setIsCollapsed(!isCollapsed)}
       >
         {isCollapsed ? (

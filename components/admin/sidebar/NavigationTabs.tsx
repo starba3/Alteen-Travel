@@ -6,26 +6,21 @@ import { cn } from "@/lib/utils";
 import { Globe, BookOpen, Plane, FileText, Users } from "lucide-react";
 
 const navigationItems = [
-  {
-    label: "Dashboard",
-    href: "/admin/dashboard",
-    icon: Globe,
-  },
-  {
-    label: "Destinations",
-    href: "/admin/destinations",
-    icon: Globe,
-  },
+  // {
+  //   label: "Destinations",
+  //   href: "/admin/destinations",
+  //   icon: Globe,
+  // },
   {
     label: "Visa Countries",
     href: "/admin/visa-countries",
     icon: BookOpen,
   },
-  {
-    label: "Trips",
-    href: "/admin/trips",
-    icon: Plane,
-  },
+  // {
+  //   label: "Trips",
+  //   href: "/admin/trips",
+  //   icon: Plane,
+  // },
   {
     label: "Visa Orders",
     href: "/admin/visa-orders",

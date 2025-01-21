@@ -1,5 +1,6 @@
 // import { initialUsers } from "./data/users";
 import type { User, UserWithPassword } from "./types/user";
+import Cookies from 'js-cookie';
 
 const AUTH_TOKEN_KEY = "auth_token";
 const USER_DATA_KEY = "user_data";
@@ -71,10 +72,11 @@ export function clearStoredAuth(): void {
   if (typeof window === "undefined") return;
   
   try {
-    localStorage.removeItem('authUser');
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('isAdmin');
-    localStorage.removeItem('userData');
+
+    Cookies.remove('authUser');
+    Cookies.remove('authToken');
+    Cookies.remove('isAdmin');
+    Cookies.remove('userData');
   } catch (error) {
     console.error("Error clearing auth data:", error);
   }

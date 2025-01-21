@@ -50,6 +50,8 @@
     "firebase-admin": "^13.0.2",
     "framer-motion": "^11.15.0",
     "input-otp": "^1.4.1",
+    "jose": "^5.9.6",
+    "js-cookie": "^3.0.5",
     "lucide-react": "^0.344.0",
     "next": "^14.2.22",
     "next-themes": "^0.4.4",
@@ -67,6 +69,8 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@types/crypto-js": "^4.2.2",
+    "@types/js-cookie": "^3.0.6",
     "@types/node": "^20.11.25",
     "@types/nodemailer": "^6.4.17",
     "@types/react": "^18.2.64",

@@ -8,6 +8,13 @@ export interface User {
   visaPrice: number;
 }
 
+export interface FirestoreUserData {
+  name: string;
+  image: string;
+  email: string;
+  isAdmin: boolean;
+}
+
 export interface UserWithPassword extends User {
   password: string;
 }

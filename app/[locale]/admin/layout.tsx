@@ -1,7 +1,6 @@
 "use client";
 
 import { Sidebar } from "@/components/admin/sidebar/Sidebar";
-
 export default function AdminLayout({
   children,
 }: {
@@ -13,6 +12,8 @@ export default function AdminLayout({
       <main className="flex-1 overflow-y-auto p-8">
         {children}
       </main>
+
     </div>
+    
   );
 }
