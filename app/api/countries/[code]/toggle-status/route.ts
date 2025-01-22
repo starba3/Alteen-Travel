@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { firestore } from '@/lib/firebase/admin-config';
+import { revalidateTag } from 'next/cache';
 
 export async function PATCH(
   request: Request,
@@ -20,6 +21,7 @@ export async function PATCH(
 
     const updatedDoc = await countryRef.get();
     const updatedCountry = { id: updatedDoc.id, ...updatedDoc.data() };
+    revalidateTag('countries');
 
     return NextResponse.json(updatedCountry);
   } catch (error) {

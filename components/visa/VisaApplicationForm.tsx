@@ -28,7 +28,7 @@ export function VisaApplicationForm({ selectedCountry: initialCountry, preview }
   const locale = params.locale as string;
   const { t } = useTranslations(params.locale as string);
   const [showPayment, setShowPayment] = useState(false);
-  // const [selectedCountry, setSelectedCountry] = useState(initialCountry);
+  const [formData, setFormData] = useState<TravelerFormData | null>(null);
   
   const form = useForm<TravelerFormData>({
     resolver: zodResolver(travelerSchema),
@@ -50,6 +50,7 @@ export function VisaApplicationForm({ selectedCountry: initialCountry, preview }
   const totalPrice = selectedCountry ? selectedCountry.price * fields.length - getVisaPrice() * fields.length : 0;
 
   const onSubmit = (data: TravelerFormData) => {
+    setFormData(data);
     setShowPayment(true);
   };
 
@@ -136,7 +137,7 @@ export function VisaApplicationForm({ selectedCountry: initialCountry, preview }
               {locale === 'ar' ? 'معلومات المسافرين' : 'Travelers Information'}
             </h3>
             <div className="space-y-4 sm:space-y-6">
-              {fields.map((field, index) => (
+              {fields.map((field: any, index: number) => (
                 <TravelerFields
                   key={field.id}
                   index={index}
@@ -180,6 +181,7 @@ export function VisaApplicationForm({ selectedCountry: initialCountry, preview }
         onClose={() => setShowPayment(false)}
         onSuccess={handlePaymentSuccess}
         totalAmount={totalPrice}
+        formData={formData!}
       />
     </div>
   );

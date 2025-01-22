@@ -19,10 +19,10 @@ interface PaymentFormProps {
 
 const defaultValues: PaymentFormData = {
   cardNumber: "",
-  cardHolder: "",
+  cardHolderName: "",
   expiry: "",
   cvv: "",
-  acceptTerms: false,
+  // acceptTerms: false,
 };
 
 export function PaymentForm({ amount, onSuccess, onError }: PaymentFormProps) {

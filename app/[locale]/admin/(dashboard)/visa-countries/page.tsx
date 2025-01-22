@@ -9,7 +9,7 @@ async function getVisaCountries() {
   const protocol = process.env.NODE_ENV === 'development' ? 'http' : 'https';
   
   const response = await fetch(`${protocol}://${host}/api/countries`, {
-    cache: 'no-store'
+    next: { tags: ['countries'] } // Add revalidation tag
   });
   
   if (!response.ok) {

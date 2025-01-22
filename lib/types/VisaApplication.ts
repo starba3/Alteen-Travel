@@ -17,3 +17,10 @@ export interface VisaApplication {
     createdAt?: string;
     status?: 'pending' | 'approved' | 'rejected';
   }
+
+  export interface VisaApplicationResponse {
+  success: boolean;
+  visaId?: string;
+  error?: string;
+}
+  

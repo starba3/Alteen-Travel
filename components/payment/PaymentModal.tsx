@@ -7,15 +7,17 @@ import { useState } from "react";
 import { PaymentSuccess } from "./states/PaymentSuccess";
 import { PaymentError } from "./states/PaymentError";
 import type { Country } from "@/lib/countries";
+import type { TravelerFormData } from "@/lib/validations/traveler";
 
 interface PaymentModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
   totalAmount: number;
+  formData: TravelerFormData;
 }
 
-export function PaymentModal({ isOpen, onClose, onSuccess, totalAmount }: PaymentModalProps) {
+export function PaymentModal({ isOpen, onClose, onSuccess, totalAmount, formData }: PaymentModalProps) {
   const [status, setStatus] = useState<"form" | "success" | "error">("form");
 
   const handleClose = () => {
@@ -38,6 +40,7 @@ export function PaymentModal({ isOpen, onClose, onSuccess, totalAmount }: Paymen
             <PaymentHeader amount={totalAmount} onClose={handleClose} />
             <PaymentForm 
               amount={totalAmount}
+              formData={formData}
               onSuccess={handleSuccess}
               onError={() => setStatus("error")}
             />

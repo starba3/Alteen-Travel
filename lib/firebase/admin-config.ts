@@ -1,6 +1,7 @@
 import { initializeApp, getApps, cert } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
 import { getFirestore } from 'firebase-admin/firestore';
+import { getStorage } from 'firebase-admin/storage';
 
 // Check if any firebase admin apps have been initialized
 const apps = getApps();
@@ -20,3 +21,4 @@ if (!apps.length) {
 // Export the admin auth instance
 export const adminAuth = getAuth(); 
 export const firestore = getFirestore();
+export const storage = getStorage();

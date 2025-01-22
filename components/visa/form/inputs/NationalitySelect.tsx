@@ -59,7 +59,7 @@ const NationalitySelect = forwardRef<HTMLDivElement, NationalitySelectProps>(
     const { focusedIndex, setFocusedIndex } = useKeyboardNavigation({
       itemCount: filteredCountries.length,
       isOpen,
-      onSelect: (index: number) => handleSelect(filteredCountries[index].code),
+      onSelect: (index: number) => handleSelect(filteredCountries[index].name),
       onEscape: () => setIsOpen(false),
     });
 

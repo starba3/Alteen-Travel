@@ -34,7 +34,7 @@ export function PaymentFormFields({ form }: PaymentFormFieldsProps) {
 
       <FormField
         control={form.control}
-        name="cardHolder"
+        name="cardHolderName"
         render={({ field }) => (
           <FormItem>
             <FormLabel>Cardholder Name</FormLabel>
@@ -89,7 +89,7 @@ export function PaymentFormFields({ form }: PaymentFormFieldsProps) {
         />
       </div>
 
-      <FormField
+      {/* <FormField
         control={form.control}
         name="acceptTerms"
         render={({ field }) => (
@@ -107,7 +107,7 @@ export function PaymentFormFields({ form }: PaymentFormFieldsProps) {
             </div>
           </FormItem>
         )}
-      />
+      /> */}
     </div>
   );
 }

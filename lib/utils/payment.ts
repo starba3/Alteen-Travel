@@ -42,6 +42,7 @@ export async function processPayment(
     throw new Error("Card has expired");
   }
 
+  
   // In a real implementation, this would make an API call to a payment processor
   return {
     status: "success",

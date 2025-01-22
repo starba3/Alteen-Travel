@@ -1,9 +1,9 @@
 export interface PaymentFormData {
   cardNumber: string;
-  cardHolder: string;
+  cardHolderName: string;
   expiry: string;
   cvv: string;
-  acceptTerms: boolean;
+  // acceptTerms: boolean;
 }
 
 export interface PaymentResponse {
