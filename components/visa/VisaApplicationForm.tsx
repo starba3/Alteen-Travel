@@ -63,7 +63,11 @@ export function VisaApplicationForm({ selectedCountry: initialCountry, preview }
     const createVisaResponse = await handleVisaApplication(updatedFormData)
 
     if (createVisaResponse.success) {
-      form.reset(); // Reset form after successful payment
+      toast({
+        title: "Success",
+        description: createVisaResponse.visaId,
+      });
+      handlePaymentSuccess();
     } else {
       toast({
         title: "Error",
