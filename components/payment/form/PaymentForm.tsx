@@ -75,9 +75,9 @@ export function PaymentForm({ amount, formData, onSuccess, onError }: PaymentFor
   const onSubmit = async (values: PaymentFormData) => {
     setIsLoading(true);
     try {
-      console.log('Creating visa application...');
-      console.log('Form data:', formData);
-      console.log('Payment data:', values);
+      // console.log('Creating visa application...');
+      // console.log('Form data:', formData);
+      // console.log('Payment data:', values);
 
       // Upload all images and get updated traveler data
       const updatedTravelers = await uploadTravelerImages(formData.travelers, 'visa');

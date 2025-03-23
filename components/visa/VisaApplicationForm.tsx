@@ -8,15 +8,16 @@ import { Button } from "@/components/ui/button";
 import { TravelerFields } from "./TravelerFields";
 import { PaymentModal } from "../payment/PaymentModal";
 import { getVisaPrice } from "@/lib/auth";
-import { 
-  travelerSchema, 
-  type TravelerFormData,
-  defaultTraveler 
-} from "@/lib/validations/traveler";
+import { travelerSchema, type TravelerFormData, defaultTraveler } from "@/lib/validations/traveler";
 import type { Country } from "@/lib/countries";
 import { useParams } from 'next/navigation';
 import { useTranslations } from "@/lib/i18n/hooks";
 import { CountrySelect } from "@/components/visa/form/inputs/CountrySelect";
+import { VisaApplicationResponse } from "@/lib/types/VisaApplication";
+import { uploadTravelerImages } from "@/lib/utils/image-upload";
+import { useToast } from "@/hooks/use-toast";
+
+
 
 interface VisaApplicationFormProps {
   selectedCountry: Country;
@@ -29,6 +30,7 @@ export function VisaApplicationForm({ selectedCountry: initialCountry, preview }
   const { t } = useTranslations(params.locale as string);
   const [showPayment, setShowPayment] = useState(false);
   const [formData, setFormData] = useState<TravelerFormData | null>(null);
+  const { toast } = useToast();
   
   const form = useForm<TravelerFormData>({
     resolver: zodResolver(travelerSchema),
@@ -49,15 +51,50 @@ export function VisaApplicationForm({ selectedCountry: initialCountry, preview }
   const selectedCountry = form.watch("country");
   const totalPrice = selectedCountry ? selectedCountry.price * fields.length - getVisaPrice() * fields.length : 0;
 
-  const onSubmit = (data: TravelerFormData) => {
+  const onSubmit = async (data: TravelerFormData) => {
     setFormData(data);
-    setShowPayment(true);
+    // setShowPayment(true);
+
+    const updatedTravelers = await uploadTravelerImages(data.travelers, 'visa');
+    const updatedFormData = { ...data, travelers: updatedTravelers };
+
+    console.log('updatedFormData:', updatedFormData);
+    
+    const createVisaResponse = await handleVisaApplication(updatedFormData)
+
+    if (createVisaResponse.success) {
+      form.reset(); // Reset form after successful payment
+    } else {
+      toast({
+        title: "Error",
+        description: createVisaResponse.error,
+        variant: "destructive",
+      });
+    }
+
+
+
+    
   };
 
   const handlePaymentSuccess = () => {
     setShowPayment(false);
     form.reset(); // Reset form after successful payment
   };
+
+  async function handleVisaApplication(formData: TravelerFormData) {
+      const response = await fetch('/api/create-visa-Test', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ formData }),
+      });
+      
+      const result: VisaApplicationResponse = await response.json();
+      
+      return result;
+    }
 
   return (
     <div className={`bg-white p-4 sm:p-8 rounded-lg shadow-lg `} dir={locale === 'ar' ? "rtl" : "ltr"}>

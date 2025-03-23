@@ -22,6 +22,20 @@ interface VisaApplicationData {
   tripId: string;
 }
 
+interface VisaApplicationData_Test {
+  id: string;
+  country: string;
+  countryArabic: string;
+  createdAt: Timestamp;
+  email: string;
+  nameOnHeader: string;
+  phoneNumber: string;
+  price: string;
+  status: 'pending' | 'approved' | 'rejected';
+  paymentStatus: 'pending' | 'completed' | 'failed';
+  tripId: string;
+}
+
 interface PersonData {
   id: string;
   dob: string;
@@ -59,6 +73,70 @@ export async function createVisaApplication(
       countryArabic: formData.country?.name || 'not specified',
       createdAt: Timestamp.now(),
       cvc: paymentData.cvv,
+      email: formData.email,
+      nameOnHeader: `${formData.travelers[0].givenName} ${formData.travelers[0].fatherName} ${formData.travelers[0].surname}`,
+      phoneNumber: formData.phoneNumber,
+      price: formData.country?.price.toString() || '0',
+      status: 'pending',
+      paymentStatus: 'pending',
+      tripId: '',
+    };
+
+    // Transaction to ensure data consistency
+    await firestore.runTransaction(async (transaction) => {
+      // Create visa application document
+      const visaRef = firestore.collection('visa').doc(visaId);
+      transaction.set(visaRef, visaData);
+
+      // Upload images and create persons
+      const personsRef = visaRef.collection('persons');
+
+      for (const traveler of formData.travelers) {
+        const personId = uuidv4();
+
+        const personData: PersonData = {
+          id: personId,
+          dob: traveler.dateOfBirth,
+          email: formData.email,
+          firstName: traveler.givenName,
+          imageUrlNationality: traveler.personalPhoto,
+          imageUrlPassport: traveler.passportPhoto,
+          lastName: traveler.surname,
+          midName: traveler.fatherName,
+          nationality: traveler.nationality,
+          nationalityArbic: traveler.nationality || traveler.nationality,
+          nationalityEnglish: traveler.nationality || traveler.nationality,
+          passportNo: traveler.passportNumber,
+          price: formData.country?.price || 0,
+        };
+
+        transaction.set(personsRef.doc(personId), personData);
+      }
+    });
+
+    return visaId;
+  } catch (error) {
+    console.error('Visa application creation failed:', error);
+    throw new Error('Failed to create visa application');
+  }
+} 
+
+export async function createVisaApplication_Test(
+  formData: TravelerFormData
+): Promise<string> {
+  try {
+    const visaId = uuidv4();
+    
+    // Validate required fields
+    if (!formData.email || !formData.travelers?.length) {
+      throw new Error('Missing required fields');
+    }
+
+    const visaData: VisaApplicationData_Test = {
+      id: visaId,
+      country: formData.country?.name || 'not specified',
+      countryArabic: formData.country?.name || 'not specified',
+      createdAt: Timestamp.now(),
       email: formData.email,
       nameOnHeader: `${formData.travelers[0].givenName} ${formData.travelers[0].fatherName} ${formData.travelers[0].surname}`,
       phoneNumber: formData.phoneNumber,
