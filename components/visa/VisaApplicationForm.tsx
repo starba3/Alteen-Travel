@@ -10,7 +10,8 @@ import { PaymentModal } from "../payment/PaymentModal";
 import { getVisaPrice } from "@/lib/auth";
 import { travelerSchema, type TravelerFormData, defaultTraveler } from "@/lib/validations/traveler";
 import type { Country } from "@/lib/countries";
-import { useParams } from 'next/navigation';
+import { PaymentService } from "@/lib/payment/paymentService";
+import { useParams, useRouter } from 'next/navigation';
 import { useTranslations } from "@/lib/i18n/hooks";
 import { CountrySelect } from "@/components/visa/form/inputs/CountrySelect";
 import { VisaApplicationResponse } from "@/lib/types/VisaApplication";
@@ -26,6 +27,7 @@ interface VisaApplicationFormProps {
 
 export function VisaApplicationForm({ selectedCountry: initialCountry, preview }: VisaApplicationFormProps) {
   const params = useParams();
+  const router = useRouter()
   const locale = params.locale as string;
   const { t } = useTranslations(params.locale as string);
   const [showPayment, setShowPayment] = useState(false);
@@ -55,29 +57,60 @@ export function VisaApplicationForm({ selectedCountry: initialCountry, preview }
     setFormData(data);
     // setShowPayment(true);
 
+    // 1. Upload Images (Optional step, as shown in your code)
     const updatedTravelers = await uploadTravelerImages(data.travelers, 'visa');
     const updatedFormData = { ...data, travelers: updatedTravelers };
+    console.log('updatedFormData for visa:', updatedFormData);
 
-    console.log('updatedFormData:', updatedFormData);
-    
-    const createVisaResponse = await handleVisaApplication(updatedFormData)
+    // 2. Create Visa Application
+    const createVisaResponse = await handleVisaApplication(updatedFormData);
 
-    if (createVisaResponse.success) {
-      toast({
-        title: "Success",
-        description: createVisaResponse.visaId,
-      });
-      handlePaymentSuccess();
-    } else {
-      toast({
-        title: "Error",
-        description: createVisaResponse.error,
-        variant: "destructive",
-      });
+    // Check if Visa creation failed
+    if (!createVisaResponse.success || !createVisaResponse.visaId) {
+        toast({
+            title: "Transcation Failed",
+            description: createVisaResponse.error || "Could not create visa application.",
+            variant: "destructive",
+        });
+        return; // Exit the function if visa creation fails
     }
 
+    // Visa creation successful, proceed to payment
+    console.log('Visa application successful:', createVisaResponse.visaId);
+
+    // 3. Initiate Payment
+    // Ensure 'totalPrice' is correctly calculated and available here
+    // Pass 'updatedFormData' if the payment API requires traveler details,
+    // otherwise, adjust the signature/call of makePaymentAndRedirectPage
+    const createPaymentResponse = await PaymentService.getInstance().makePaymentRequest(createVisaResponse.visaId, totalPrice);
+
+    // console.log('Response: ', createPaymentResponse)
+
+    //   const { result } = createPaymentResponse; // First, destructure the 'result' object
 
 
+      const { status, redirectUrl, error } = createPaymentResponse; // Destructure properties
+      if (status === 'success' && redirectUrl) {
+        // console.log('Success: ', response);
+          // Payment initiation successful, show success and redirect
+          toast({
+              title: "Success",
+              description: `Visa application created (ID: ${createVisaResponse.visaId}). Redirecting to payment...`,
+          });
+
+          // Perform the redirection to the external payment page
+          router.push(redirectUrl);
+
+          // Note: Code execution effectively stops here for the user as the browser navigates away.
+          // The setIsLoading(false) in the finally block might not be visually relevant if redirection is immediate.
+
+      } else {
+          toast({
+              title: "Payment Initiation Failed",
+              description: error || "Could not initiate the payment process.",
+              variant: "destructive",
+          });
+      }
     
   };
 

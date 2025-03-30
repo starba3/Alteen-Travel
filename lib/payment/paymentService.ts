@@ -1,3 +1,5 @@
+import { PaymentResponse } from "../api/payment";
+
 export interface PaymentIntent {
   id: string;
   amount: number;
@@ -10,6 +12,11 @@ export interface CreatePaymentParams {
   currency?: string;
   description?: string;
   metadata?: Record<string, string>;
+}
+
+export interface PaymentRequestData {
+  amount: number;
+  visaId?: string;
 }
 
 export class PaymentService {
@@ -44,5 +51,20 @@ export class PaymentService {
 
   async getPaymentStatus(paymentIntentId: string): Promise<string> {
     return "success";
+  }
+
+  async makePaymentRequest(visaId: string, amount: number) {
+    const requestBody: PaymentRequestData = { visaId, amount }; // Create the request body object
+      const response = await fetch('/api/make-payment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody),
+      });
+
+      const paymentResponse = await response.json();
+  
+      return paymentResponse;
   }
 }
