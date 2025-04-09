@@ -184,3 +184,30 @@ export async function createVisaApplication_Test(
     throw new Error('Failed to create visa application');
   }
 } 
+
+export async function ConfirmVisaApplicationPayment(
+  visaId: string // Corrected type hint and variable name casing
+): Promise<string> {
+  try {
+    
+    // Validate required fields
+    if (!visaId) { // Use corrected variable name
+      throw new Error('Missing required VisaId');
+    }
+
+
+    // Transaction to ensure data consistency
+    await firestore.runTransaction(async (transaction) => {
+      // Create visa application document
+      const visaRef = firestore.collection('visa').doc(visaId); // Use input visaId
+
+      // Update the payment status
+      transaction.update(visaRef, { paymentStatus: 'completed' });
+    });
+
+    return visaId; // Return the input visaId
+  } catch (error) {
+    console.error('Confirming visa payment failed:', error); // Updated error message
+    throw new Error('Failed to confirm visa payment'); // Updated error message
+  }
+} 

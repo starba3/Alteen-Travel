@@ -61,7 +61,7 @@ export async function makePaymentAndRedirectPage(
       amount: amount,
       currency: "IQD",
       locale: "en_US",
-      finishPaymentUrl: "https://merchant.net/finish", // Consider making dynamic
+      finishPaymentUrl: `https://alteen-travel-vbzw.vercel.app/api/confirm-payment?visaId=${visaId}`, // Consider making dynamic
       notificationUrl: "https://merchhant.net/notification", // Consider making dynamic
   };
 
