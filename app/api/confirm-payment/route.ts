@@ -13,13 +13,13 @@ export async function GET(req: Request) {
 
   try {
     await ConfirmVisaApplicationPayment(visaId);
-
-    // Redirect to the root page upon successful confirmation
-    redirect('/');
-
   } catch (error) {
     console.error('Failed to confirm visa payment:', error);
     // Return JSON error response instead of redirecting on failure
     return NextResponse.json({ success: false, error: 'Failed to confirm visa payment' }, { status: 500 });
   }
+
+  // Redirect to the root page upon successful confirmation
+  // This needs to be outside the try/catch as redirect() throws an error internally
+  redirect('/');
 }
