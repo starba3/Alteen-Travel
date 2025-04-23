@@ -45,6 +45,7 @@ interface PersonData {
   imageUrlPassport: string;
   lastName: string;
   midName: string;
+  gender: string,
   nationality: string;
   nationalityArbic: string;
   nationalityEnglish: string;
@@ -103,6 +104,7 @@ export async function createVisaApplication(
           imageUrlPassport: traveler.passportPhoto,
           lastName: traveler.surname,
           midName: traveler.fatherName,
+          gender: traveler.gender,
           nationality: traveler.nationality,
           nationalityArbic: traveler.nationality || traveler.nationality,
           nationalityEnglish: traveler.nationality || traveler.nationality,
@@ -167,6 +169,7 @@ export async function createVisaApplication_Test(
           imageUrlPassport: traveler.passportPhoto,
           lastName: traveler.surname,
           midName: traveler.fatherName,
+          gender: traveler.gender,
           nationality: traveler.nationality,
           nationalityArbic: traveler.nationality || traveler.nationality,
           nationalityEnglish: traveler.nationality || traveler.nationality,

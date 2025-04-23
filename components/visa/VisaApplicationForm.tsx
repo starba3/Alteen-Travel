@@ -40,7 +40,7 @@ export function VisaApplicationForm({ selectedCountry: initialCountry, preview }
       email: '',
       phoneNumber: '',
       country: initialCountry,
-      travelers: [defaultTraveler]
+      travelers: [defaultTraveler] // Cast to any to allow initial empty gender
     },
     mode: "onChange"
   });
@@ -191,7 +191,7 @@ export function VisaApplicationForm({ selectedCountry: initialCountry, preview }
                   {t('form.contact.country')}
                 </label>
                 <CountrySelect
-                  value={selectedCountry}
+                  value={selectedCountry as Country} // Cast to Country type expected by component
                   onChange={(country) => form.setValue("country", country)}
                   placeholder={t('form.contact.countryPlaceholder')}
                   className="w-full"
@@ -227,7 +227,7 @@ export function VisaApplicationForm({ selectedCountry: initialCountry, preview }
             <Button
               type="button"
               variant="outline"
-              onClick={() => append(defaultTraveler)}
+              onClick={() => append(defaultTraveler)} // Cast to any for append
               className="w-full sm:w-auto"
             >
               {t('form.buttons.addTraveler')}
